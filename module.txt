@@ -1,0 +1,14 @@
+{
+	"id" : "Calendar",
+	"version" : "0.0.1",
+	"author" : "",
+	"displayName" : "Calendar",
+	"description" : "Provides common support for calendars.",
+	"dependencies" : [
+	    {
+			"id" : "Core",
+			"minVersion" : "1.0.0"
+	    }
+	],
+	"isServerSideOnly" : false
+}
