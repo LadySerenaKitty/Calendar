@@ -11,12 +11,12 @@ public class BasicCalendarData implements CalendarData {
     WorldProvider world;
 
     // data
-    String name;
-    String shortName;
-    String mediumName;
-    String longName;
+    String nName;
+    String sName;
+    String mName;
+    String lName;
 
-    float startDay;
+    float start;
     float length;
 
     public BasicCalendarData(float startDay, float length, String name, String longName, String mediumName, String shortName) {
@@ -42,14 +42,14 @@ public class BasicCalendarData implements CalendarData {
         int_init(TeraMath.fastFloor(world.getTime().getDays()));
     }
 
-    private void int_init(float startDay, float length, String name, String longName, String mediumName, String shortName) {
-           this.startDay = startDay;
-           this.length = length;
+    private void int_init(float startDay, float days, String name, String longName, String mediumName, String shortName) {
+           this.start = startDay;
+           this.length = days;
 
-           this.name = name;
-           this.shortName = shortName;
-           this.mediumName = mediumName;
-           this.longName = longName;
+           this.nName = name;
+           this.sName = shortName;
+           this.mName = mediumName;
+           this.lName = longName;
     }
     private void int_init(float startDay, float length, String name, String longName, String mediumName) {
         String shrtName;
@@ -85,27 +85,27 @@ public class BasicCalendarData implements CalendarData {
 
     @Override
     public String getName() {
-        return name;
+        return nName;
     }
 
     @Override
     public String getShortName() {
-        return shortName;
+        return sName;
     }
 
     @Override
     public String getMediumName() {
-        return mediumName;
+        return mName;
     }
 
     @Override
     public String getLongName() {
-        return longName;
+        return lName;
     }
 
     @Override
     public float getStartDay() {
-        return startDay;
+        return start;
     }
 
     @Override

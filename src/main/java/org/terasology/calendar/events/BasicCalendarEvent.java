@@ -1,8 +1,9 @@
 package org.terasology.calendar.events;
 
 import org.terasology.calendar.data.CalendarData;
+import org.terasology.entitySystem.event.AbstractConsumableEvent;
 
-public class BasicCalendarEvent implements CalendarEvent {
+public class BasicCalendarEvent extends AbstractConsumableEvent implements CalendarEvent {
 
     private CalendarData calendarData;
 

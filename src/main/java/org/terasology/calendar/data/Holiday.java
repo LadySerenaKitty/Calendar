@@ -4,20 +4,10 @@ public class Holiday extends BasicCalendarData {
 
     @Override
     public String getLongName() {
-        StringBuilder stringBuilder = new StringBuilder(longName);
+        StringBuilder stringBuilder = new StringBuilder(lName);
         stringBuilder.append(" ");
         stringBuilder.append(getName());
 
         return stringBuilder.toString();
-    }
-
-    @Override
-    public float getLength() {
-        return 0;
-    }
-
-    @Override
-    public boolean isOneDayOnly() {
-        return true;
     }
 }
