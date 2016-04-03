@@ -2,7 +2,7 @@ package org.terasology.calendar.data.components;
 
 import org.terasology.entitySystem.Component;
 
-public class Holiday implements Component {
+public class HolidayComponent implements Component {
 
     private int day;
     private int length;
@@ -10,10 +10,10 @@ public class Holiday implements Component {
 
     private String name;
 
-    private Holiday() {
+    private HolidayComponent() {
     }
 
-    public Holiday(int calendarDay, int calendarMonth, int days, String calendarName) {
+    public HolidayComponent(int calendarDay, int calendarMonth, int days, String calendarName) {
         day = calendarDay;
         month = calendarMonth;
         length = days;

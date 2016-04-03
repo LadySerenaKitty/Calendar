@@ -65,7 +65,7 @@ public class Calendar {
         worldTime = worldProvider.getTime();
     }
 
-    public void updateToday() {
+    public DateInformation updateToday() {
 
         int calcDays = TeraMath.floorToInt(worldTime.getDays());
         boolean leapYear = (calcDays / (yearDays * leapDiff)) == 0;
@@ -84,5 +84,6 @@ public class Calendar {
         // TODO implement weekInMonth
         // TODO make any month the leap/skip month
 
+        return new DateInformation(year, month, day, (float)calcDays);
     }
 }

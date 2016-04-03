@@ -2,14 +2,14 @@ package org.terasology.calendar.data.components;
 
 import org.terasology.entitySystem.Component;
 
-public class Calendar implements Component {
+public class CalendarComponent implements Component {
     private int lenWeek;
     private String name;
 
-    private Calendar() {
+    private CalendarComponent() {
     }
 
-    public Calendar(int daysPerWeek, String calendarName) {
+    public CalendarComponent(int daysPerWeek, String calendarName) {
         lenWeek = daysPerWeek;
         name = calendarName;
     }

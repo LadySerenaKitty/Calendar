@@ -2,7 +2,7 @@ package org.terasology.calendar.data.components;
 
 import org.terasology.entitySystem.Component;
 
-public class Month implements Component {
+public class MonthComponent implements Component {
     private int length;
     private int month;
 
@@ -10,10 +10,10 @@ public class Month implements Component {
     private String mName;
     private String lName;
 
-    private Month() {
+    private MonthComponent() {
     }
 
-    public Month(int monthLength, int monthNumber, String shortName, String mediumName, String longName) {
+    public MonthComponent(int monthLength, int monthNumber, String shortName, String mediumName, String longName) {
         length = monthLength;
         month = monthNumber;
 
