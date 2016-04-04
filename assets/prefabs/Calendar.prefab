@@ -1,0 +1,123 @@
+{
+    "Calendar": {
+        "name": "Gregorian",
+        "daysPerWeek": 7,
+
+        "months": [
+            {
+                "shortName" : "Jan",
+                "mediumName": "Jan",
+                "longName" : "January",
+                "length": 31,
+                "month": 1
+            },
+            {
+                "shortName" : "Feb",
+                "mediumName": "Feb",
+                "longName" : "February",
+                "length": 28,
+                "month": 2
+            },
+            {
+                "shortName" : "Mar",
+                "mediumName": "March",
+                "longName" : "March",
+                "length": 31,
+                "month": 3
+            },
+            {
+                "shortName" : "Apr",
+                "mediumName": "April",
+                "longName" : "April",
+                "length": 30,
+                "month": 4
+            },
+            {
+                "shortName" : "May",
+                "mediumName": "May",
+                "longName" : "May",
+                "length": 31,
+                "month": 5
+            },
+            {
+                "shortName" : "Jun",
+                "mediumName": "June",
+                "longName" : "June",
+                "length": 30,
+                "month": 6
+            },
+            {
+                "shortName" : "Jul",
+                "mediumName": "July",
+                "longName" : "July",
+                "length": 31,
+                "month": 7
+            },
+            {
+                "shortName" : "Aug",
+                "mediumName": "Aug",
+                "longName" : "August",
+                "length": 31,
+                "month": 8
+            },
+            {
+                "shortName" : "Sep",
+                "mediumName": "Sep",
+                "longName" : "September",
+                "length": 30,
+                "month": 9
+            },
+            {
+                "shortName" : "Oct",
+                "mediumName": "Oct",
+                "longName" : "October",
+                "length": 31,
+                "month": 10
+            },
+            {
+                "shortName" : "Nov",
+                "mediumName": "Nov",
+                "longName" : "November",
+                "length": 30,
+                "month": 11
+            },
+            {
+                "shortName" : "Dec",
+                "mediumName": "Dec",
+                "longName" : "December",
+                "length": 31,
+                "month": 12
+            }
+        ],
+        "seasons": [
+            {
+                "startDay": 20,
+                "startMonth": 3,
+                "endDay": 19,
+                "endMonth": 6,
+                "name": "Spring"
+            },
+            {
+                "startDay": 20,
+                "startMonth": 6,
+                "endDay": 21,
+                "endMonth": 9,
+                "name": "Summer"
+            },
+            {
+                "startDay": 22,
+                "startMonth": 9,
+                "endDay": 20,
+                "endMonth": 12,
+                "name": "Fall"
+            },
+            {
+                "startDay": 21,
+                "startMonth": 12,
+                "endDay": 19,
+                "endMonth": 3,
+                "name": "Winter"
+            }
+        ]
+    }
+}

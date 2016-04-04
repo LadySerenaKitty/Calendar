@@ -2,11 +2,13 @@ package org.terasology.calendar;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.terasology.calendar.data.components.CalendarComponent;
-import org.terasology.calendar.data.components.HolidayComponent;
-import org.terasology.calendar.data.components.MonthComponent;
-import org.terasology.calendar.data.components.SeasonComponent;
-import org.terasology.entitySystem.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.terasology.calendar.components.CalendarComponent;
+import org.terasology.calendar.components.HolidayComponent;
+import org.terasology.calendar.components.MonthComponent;
+import org.terasology.calendar.components.SeasonComponent;
+import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.prefab.Prefab;
@@ -23,19 +25,22 @@ import org.terasology.world.time.WorldTime;
 @RegisterSystem
 @Share(value = CalendarSystem.class)
 public class CalendarSystem extends BaseComponentSystem {
+    private static final Logger logger = LoggerFactory.getLogger(CalendarSystem.class);
 
     @In
     private WorldProvider world;
 
-    @In
     private WorldTime worldTime;
 
     @In
     private PrefabManager prefabManager;
 
-    @In
     private EntityRef entityRef;
 
+    @In
+    private EntityManager entityManager;
+
+    private Prefab calendarPrefab;
     private CalendarComponent calendar;
     private List<HolidayComponent> holidays;
     private List<MonthComponent> months;
@@ -55,37 +60,39 @@ public class CalendarSystem extends BaseComponentSystem {
 
     @Override
     public void preBegin() {
-        calendar = entityRef.getComponent(CalendarComponent.class);
-        Prefab prefab = prefabManager.getPrefab("calendar");
-
-        if ( prefab.hasComponent(HolidayComponent.class) ) {
-            prefab.iterateComponents().forEach((Component t) -> {
-                    if ( t instanceof HolidayComponent ) {
-                        holidays.add( (HolidayComponent)t );
-                    }
-                }
-            );
-        }
-        if ( prefab.hasComponent(MonthComponent.class) ) {
-            prefab.iterateComponents().forEach((Component t) -> {
-                    if ( t instanceof MonthComponent ) {
-                        months.add( (MonthComponent)t );
-                    }
-                }
-            );
-        }
-        if ( prefab.hasComponent(SeasonComponent.class) ) {
-            prefab.iterateComponents().forEach((Component t) -> {
-                    if ( t instanceof SeasonComponent ) {
-                        seasons.add( (SeasonComponent)t );
-                    }
-                }
-            );
-        }
+        calendarPrefab = prefabManager.getPrefab("calendar");
     }
 
     @Override
     public void postBegin() {
+        calendar = entityManager.create(calendarPrefab).getComponent(CalendarComponent.class);
+
+        logger.info("Calendar: ".concat(calendar.getName()));
+
+        if ( calendar.getHolidays().isEmpty() ) {
+            logger.info("\tNo holidays.  How do the people on this world get extra days off?");
+        } else {
+            calendar.getHolidayIterator().forEachRemaining((HolidayComponent c) -> {
+                logger.info("\tHoliday: ".concat(c.getName()));
+            });
+        }
+
+        if ( calendar.getMonths().isEmpty() ) {
+            logger.info("\tNo months.  That's no moon...");
+        } else {
+            calendar.getMonthIterator().forEachRemaining((MonthComponent c) -> {
+                logger.info("\tMonth: ".concat(c.getName()));
+            });
+        }
+
+        if ( calendar.getSeasons().isEmpty() ) {
+            logger.info("\tNo seasons.  Now that's what I call a stable climate!");
+        } else {
+            calendar.getSeasonIterator().forEachRemaining((SeasonComponent c) -> {
+                logger.info("\tSeason: ".concat(c.getName()));
+            });
+        }
+
     }
 
     @Override
@@ -104,4 +111,21 @@ public class CalendarSystem extends BaseComponentSystem {
     public void onMidnight(OnMidnightEvent event, EntityRef ref) {
 
     }
+
+/*    @ReceiveEvent(components = CalendarComponent.class)
+    public void onAddedCalendar(OnAddedComponent addedComponent, EntityRef ref) {
+        logger.info("Calendar event: ".concat(addedComponent.getClass().getName()));
+    }
+    @ReceiveEvent(components = CalendarComponent.class)
+    public void onAddedHoliday(OnAddedComponent addedComponent, EntityRef ref) {
+        logger.info("Holiday event: ".concat(addedComponent.getClass().getName()));
+    }
+    @ReceiveEvent(components = CalendarComponent.class)
+    public void onAddedMonth(OnAddedComponent addedComponent, EntityRef ref) {
+        logger.info("Month event: ".concat(addedComponent.getClass().getName()));
+    }
+    @ReceiveEvent(components = CalendarComponent.class)
+    public void onAddedSeason(OnAddedComponent addedComponent, EntityRef ref) {
+        logger.info("Season event: ".concat(addedComponent.getClass().getName()));
+    } // */
 }

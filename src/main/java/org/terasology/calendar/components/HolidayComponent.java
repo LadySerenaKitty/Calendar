@@ -1,14 +1,16 @@
-package org.terasology.calendar.data.components;
+package org.terasology.calendar.components;
 
 import org.terasology.entitySystem.Component;
+import org.terasology.reflection.MappedContainer;
 
+@MappedContainer
 public class HolidayComponent implements Component {
 
-    private int day;
-    private int length;
-    private int month;
+    public int day;
+    public int month;
+    public int length;
 
-    private String name;
+    public String name;
 
     private HolidayComponent() {
     }
