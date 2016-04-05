@@ -14,4 +14,12 @@ public class WeekdayComponent implements Component {
         name = dayName;
         dayOfWeek = dayWeek;
     }
+
+    public int getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

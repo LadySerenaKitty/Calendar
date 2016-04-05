@@ -8,30 +8,37 @@ public class HolidayComponent implements Component {
 
     private int day;
     private int month;
-    private int length;
+    private int endDay;
+    private int endMonth;
 
     private String name;
 
     private HolidayComponent() {
     }
 
-    public HolidayComponent(int calendarDay, int calendarMonth, int days, String calendarName) {
-        day = calendarDay;
-        month = calendarMonth;
-        length = days;
+    public HolidayComponent(int calendarStartDay, int calendarStartMonth, int calendarEndDay, int calendarEndMonth, String calendarName) {
+        day = calendarStartDay;
+        month = calendarStartMonth;
+        endDay = calendarEndDay;
+        endMonth = calendarEndMonth;
+
         name = calendarName;
     }
 
-     public int getDay() {
+     public int getStartDay() {
         return day;
     }
 
-    public int getLength() {
-        return length;
+   public int getStartMonth() {
+        return month;
     }
 
-   public int getMonth() {
-        return month;
+    public int getEndDay() {
+        return endDay;
+    }
+
+    public int getEndMonth() {
+        return endMonth;
     }
 
     public String getName() {

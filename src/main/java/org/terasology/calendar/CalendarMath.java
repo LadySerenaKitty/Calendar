@@ -69,7 +69,7 @@ public class CalendarMath {
     }
 
     public int getCurrentMonthDay() {
-        return currentMonthDay;
+        return currentMonthDay + 1;
     }
 
     public int getCurrentMonthWeek() {
@@ -85,7 +85,7 @@ public class CalendarMath {
     }
 
     public int getCurrentYearDay() {
-        return currentYearDay;
+        return currentYearDay + 1;
     }
 
     public int getCurrentYearMonth() {
@@ -94,5 +94,30 @@ public class CalendarMath {
 
     public int getCurrentYearWeek() {
         return currentYearWeek;
+    }
+
+    // utility stuffies
+    public boolean isYearStart() {
+        return (currentYearDay == 0);
+    }
+
+    public boolean isMonthStart() {
+        return (currentMonthDay == 0);
+    }
+
+    public boolean isWeekStart() {
+        return (currentWeekDay == 0);
+    }
+
+    public boolean isYearEnd() {
+        return (getCurrentYearDay() == daysYear);
+    }
+
+    public boolean isMonthEnd() {
+        return (getCurrentMonthDay() == daysMonth);
+    }
+
+    public boolean isWeekEnd() {
+        return (getCurrentWeekDay() == (daysWeek - 1));
     }
 }
