@@ -50,7 +50,7 @@ public class CalendarFormatter {
                 new DateComponent(calendarMath.getCurrentMonthDay(), calendarMath.getCurrentYearMonth(), calendarMath.getCurrentYear(), calendarMath.getCurrentDay()));
     }
 
-    /** Converts a date to kitty-readable form, similar to {@link java.text.SimpleDateFormat}.
+    /** Converts a date to person-readable form, similar to {@link java.text.SimpleDateFormat}.
      * This mostly follows the same format, with a few exceptions.  Full list of pattern parts follows.
      *
      * <ul>
@@ -67,7 +67,7 @@ public class CalendarFormatter {
      *
      * @param formatString The string used to convert the date given.  Similar to {@link java.text.SimpleDateFormat}
      * @param date The date to process.
-     * @return Kitty-readable date string.
+     * @return Person-readable date string.
      */
     public static String formatDate(String formatString, DateComponent date) {
         mather.updateToday(date.getGameDay());
