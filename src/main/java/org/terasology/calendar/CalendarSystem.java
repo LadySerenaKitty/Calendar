@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 MovingBlocks
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.terasology.calendar;
 
 import java.util.ArrayList;
@@ -39,6 +54,7 @@ import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.logic.chat.ChatMessageEvent;
+import org.terasology.logic.common.DisplayNameComponent;
 import org.terasology.math.TeraMath;
 import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
@@ -46,7 +62,7 @@ import org.terasology.registry.Share;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.time.WorldTime;
 
-@RegisterSystem()
+@RegisterSystem
 @Share(value = CalendarSystem.class)
 public class CalendarSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
     private static final Logger logger = LoggerFactory.getLogger(CalendarSystem.class);
@@ -73,8 +89,8 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
     private List<WeekdayComponent> weekdays;
 
     // basic timekeeping
-    int prevDay;
-    int prevTick;
+    private int prevDay;
+    private int prevTick;
 
     @Override
     public void initialise() {
@@ -87,7 +103,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         seasons = new ArrayList<>();
         weekdays = new ArrayList<>();
 
-        prevDay = 0;
+        prevDay = -1;
         prevTick = 0;
     }
 
@@ -103,7 +119,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
 
         logger.info("Calendar: ".concat(calendar.getName()));
 
-        if ( calendar.getHolidays().isEmpty() ) {
+        if (calendar.getHolidays().isEmpty()) {
             logger.info("\tNo holidays.  How do the people on this world get extra days off?");
         } else {
             logger.info("\tHolidays: ".concat(String.valueOf(calendar.getHolidays().size())));
@@ -113,7 +129,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
             });
         }
 
-        if ( calendar.getMonths().isEmpty() ) {
+        if (calendar.getMonths().isEmpty()) {
             logger.info("\tNo months.  That's no moon...");
         } else {
             logger.info("\tMonths: ".concat(String.valueOf(calendar.getMonths().size())));
@@ -123,7 +139,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
             });
         }
 
-        if ( calendar.getSeasons().isEmpty() ) {
+        if (calendar.getSeasons().isEmpty()) {
             logger.info("\tNo seasons.  Now that's what I call a stable climate!");
         } else {
             logger.info("\tSeasons: ".concat(String.valueOf(calendar.getSeasons().size())));
@@ -133,7 +149,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
             });
         }
 
-        if ( calendar.getWeekdays().isEmpty() ) {
+        if (calendar.getWeekdays().isEmpty()) {
             logger.info("No weekdays.  So when do we party?");
         } else {
             logger.info("\tWeekdays: ".concat(String.valueOf(calendar.getWeekdays().size())));
@@ -144,6 +160,14 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
 
         calendarMath = new CalendarMath(weekdays.size(), calendar.getDaysPerMonth(), calendar.getDaysPerMonth() * months.size(), worldTime);
+
+        calendarMath.updateToday();
+
+        // client info (needed for chat)
+        DisplayNameComponent dnc = new DisplayNameComponent();
+        dnc.name = calendar.getName();
+        dnc.description = "Calendar System";
+        calendarEntity.addComponent(dnc);
     }
 
     @Override
@@ -162,7 +186,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         String message = notifyClientString();
         for (EntityRef client : entityManager.getEntitiesWith(ClientComponent.class)) {
             client.iterateComponents().forEach((Component c) -> {
-                if ( c instanceof ClientComponent ) {
+                if (c instanceof ClientComponent) {
                     client.send(new ChatMessageEvent(message, calendarEntity));
                 }
             });
@@ -175,7 +199,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         sb.append(", ");
         sb.append(calendarMath.getCurrentMonthDay());
         sb.append(" ");
-        sb.append(calendar.getMonths().get(calendarMath.getCurrentYearMonth()).longName );
+        sb.append(calendar.getMonths().get(calendarMath.getCurrentYearMonth()).longName);
         sb.append(" ");
         sb.append(calendarMath.getCurrentYear());
 
@@ -187,20 +211,20 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         int day = TeraMath.floorToInt(worldTime.getDays());
         int tick = TeraMath.floorToInt(worldTime.getDays() * 1000) % 1000;
 
-        /*if ( day == prevDay ) {
+        /*if (day == prevDay) {
             return;
         } // */
 
-        if ( tick != 1 && tick != 999 ) {
+        if (tick != 1 && tick != 999) {
             return;
         }
 
-        if ( day != prevDay ) {
+        if (tick == 1 && day != prevDay) {
             calendarMath.updateToday();
             broadcastCalendar();
+            prevDay = day;
         }
 
-        prevDay = day;
         prevTick = tick;
 
 
@@ -212,21 +236,21 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         WeekdayComponent wic = weekdays.get(calendarMath.getCurrentWeekDay());
         WeekdayComponent wc = new WeekdayComponent(wic.getName(), wic.getDayOfWeek());
 
-        if ( tick == 1 ) {
+        if (tick == 1) {
             broadcastStarts(tDay, tMonth, tYear, dc, wc);
-        } else if ( tick == 999 ) {
+        } else if (tick == 999) {
             broadcastEnds(tDay, tMonth, tYear, dc, wc);
         }
     }
 
     private void broadcastStarts(int tDay, int tMonth, int tYear, DateComponent dc, WeekdayComponent wc) {
-        if ( calendarMath.isYearStart() ) {
+        if (calendarMath.isYearStart()) {
             broadcastEvent(new OnYearEvent(tYear, tYear), dc, wc);
             broadcastEvent(new OnYearStart(tYear, tYear), dc, wc);
         }
 
         // broadcast the month
-        if ( calendarMath.isMonthStart() ) {
+        if (calendarMath.isMonthStart()) {
             MonthComponent mic = months.get(tMonth);
             MonthComponent mc = new MonthComponent(tMonth, mic.getShortName(), mic.getMediumName(), mic.getLongName());
             broadcastEvent(new OnMonthEvent(tYear, tMonth), mc, dc, wc);
@@ -234,19 +258,19 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
 
         // broadcast the week (currently, only WeekType.GAME is implemented fully
-        if ( calendarMath.isWeekStart() ) {
+        if (calendarMath.isWeekStart()) {
             broadcastEvent(new OnWeekEvent(tYear, calendarMath.getCurrentGameWeek()), dc, wc);
             broadcastEvent(new OnWeekStart(tYear, calendarMath.getCurrentGameWeek()), dc, wc);
         }
 
         // broadcast the season
-        if ( !seasons.isEmpty() ) {
-            seasons.iterator().forEachRemaining((SeasonComponent sic) ->{
+        if (!seasons.isEmpty()) {
+            seasons.iterator().forEachRemaining((SeasonComponent sic) -> {
                 int startDay = sic.getStartDay();
                 int startMonth = sic.getStartMonth();
                 SeasonComponent sc = new SeasonComponent(startDay, startMonth, sic.getEndDay(), sic.getEndMonth(), sic.getName());
 
-                if ( startDay == tDay && startMonth == tMonth ) {
+                if (startDay == tDay && startMonth == tMonth) {
                     broadcastEvent(new OnSeasonEvent(tYear, seasons.indexOf(sic)), sc, dc, wc);
                     broadcastEvent(new OnSeasonStart(tYear, seasons.indexOf(sic)), sc, dc, wc);
                 }
@@ -254,13 +278,13 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
 
         // broadcast any holidays
-        if ( !holidays.isEmpty() ) {
+        if (!holidays.isEmpty()) {
             holidays.iterator().forEachRemaining((HolidayComponent hic) -> {
                 int startDay = hic.getStartDay();
                 int startMonth = hic.getStartMonth();
                 HolidayComponent hc = new HolidayComponent(startDay, startMonth, hic.getEndDay(), hic.getEndMonth(), hic.getName());
 
-                if ( startDay == tDay && startMonth == tMonth ) { // event start
+                if (startDay == tDay && startMonth == tMonth) { // event start
                     broadcastEvent(new OnHolidayEvent(tYear, holidays.indexOf(hic)), hc, dc, wc);
                     broadcastEvent(new OnHolidayStart(tYear, holidays.indexOf(hic)), hc, dc, wc);
                 }
@@ -269,13 +293,13 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
     }
 
     private void broadcastEnds(int tDay, int tMonth, int tYear, DateComponent dc, WeekdayComponent wc) {
-        if ( calendarMath.isYearEnd() ) {
+        if (calendarMath.isYearEnd()) {
             broadcastEvent(new OnYearEvent(tYear, tYear), dc, wc);
             broadcastEvent(new OnYearEnd(tYear, tYear), dc, wc);
         }
 
         // broadcast the month
-        if ( calendarMath.isMonthEnd() ) {
+        if (calendarMath.isMonthEnd()) {
             MonthComponent mic = months.get(tMonth);
             MonthComponent mc = new MonthComponent(tMonth, mic.getShortName(), mic.getMediumName(), mic.getLongName());
             broadcastEvent(new OnMonthEvent(tYear, tMonth), mc, dc, wc);
@@ -283,19 +307,19 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
 
         // broadcast the week
-        if ( calendarMath.isWeekEnd() ) {
+        if (calendarMath.isWeekEnd()) {
             broadcastEvent(new OnWeekEvent(tYear, calendarMath.getCurrentGameWeek()), dc, wc);
             broadcastEvent(new OnWeekEnd(tYear, calendarMath.getCurrentGameWeek()), dc, wc);
         }
 
         // broadcast the season
-        if ( !seasons.isEmpty() ) {
-            seasons.iterator().forEachRemaining((SeasonComponent sic) ->{
+        if (!seasons.isEmpty()) {
+            seasons.iterator().forEachRemaining((SeasonComponent sic) -> {
                 int endDay = sic.getEndDay();
                 int endMonth = sic.getEndMonth();
                 SeasonComponent sc = new SeasonComponent(sic.getStartDay(), sic.getStartMonth(), endDay, endMonth, sic.getName());
 
-                if ( endDay == tDay && endMonth == tMonth ) {
+                if (endDay == tDay && endMonth == tMonth) {
                     broadcastEvent(new OnSeasonEvent(tYear, seasons.indexOf(sic)), sc, dc, wc);
                     broadcastEvent(new OnSeasonEnd(tYear, seasons.indexOf(sic)), sc, dc, wc);
                 }
@@ -303,13 +327,13 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
 
         // broadcast any holidays
-        if ( !holidays.isEmpty() ) {
+        if (!holidays.isEmpty()) {
             holidays.iterator().forEachRemaining((HolidayComponent hic) -> {
                 int endDay = hic.getEndDay();
                 int endMonth = hic.getEndMonth();
                 HolidayComponent hc = new HolidayComponent(hic.getStartDay(), hic.getStartMonth(), endDay, endMonth, hic.getName());
 
-                if ( endDay == tDay && endMonth == tMonth ) { // event start
+                if (endDay == tDay && endMonth == tMonth) { // event start
                     broadcastEvent(new OnHolidayEvent(tYear, holidays.indexOf(hic)), hc, dc, wc);
                     broadcastEvent(new OnHolidayEnd(tYear, holidays.indexOf(hic)), hc, dc, wc);
                 }
@@ -319,7 +343,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
 
     private void broadcastEvent(Event evt, Component... comp) {
         EntityRef ent = entityManager.create();
-        for ( Component c : comp ) {
+        for (Component c : comp) {
             ent.addComponent(c);
         }
         ent.send(evt);
