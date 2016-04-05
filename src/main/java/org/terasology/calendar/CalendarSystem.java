@@ -154,7 +154,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         } else {
             logger.info("\tWeekdays: ".concat(String.valueOf(calendar.getWeekdays().size())));
             calendar.getWeekdayIterator().forEachRemaining((WeekdayInitComponent c) -> {
-                weekdays.add(new WeekdayComponent(c.name, c.dayOfWeek));
+                weekdays.add(new WeekdayComponent(c.name, c.shortName, c.dayOfWeek));
                 logger.info("\t\t".concat(c.name));
             });
         }
@@ -163,9 +163,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
 
         calendarMath.updateToday();
 
+        CalendarFormatter.init(calendar, calendarMath);
+
         // client info (needed for chat)
         DisplayNameComponent dnc = new DisplayNameComponent();
-        dnc.name = calendar.getName();
+        dnc.name = "Calendar (".concat(calendar.getName()).concat(")");
         dnc.description = "Calendar System";
         calendarEntity.addComponent(dnc);
     }
@@ -195,13 +197,14 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
 
     private String notifyClientString() {
         StringBuilder sb = new StringBuilder("New day: ");
-        sb.append(calendar.getWeekdays().get(calendarMath.getCurrentWeekDay()).name);
+        sb.append(CalendarFormatter.formatDate());
+        /*sb.append(calendar.getWeekdays().get(calendarMath.getCurrentWeekDay()).name);
         sb.append(", ");
         sb.append(calendarMath.getCurrentMonthDay());
         sb.append(" ");
         sb.append(calendar.getMonths().get(calendarMath.getCurrentYearMonth()).longName);
         sb.append(" ");
-        sb.append(calendarMath.getCurrentYear());
+        sb.append(calendarMath.getCurrentYear()); // */
 
         return sb.toString();
     }
@@ -232,9 +235,9 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         int tMonth = calendarMath.getCurrentYearMonth();
         int tYear = calendarMath.getCurrentYear();
 
-        DateComponent dc = new DateComponent(tDay, tMonth, calendarMath.getCurrentYear());
+        DateComponent dc = new DateComponent(tDay, tMonth, calendarMath.getCurrentYear(), day);
         WeekdayComponent wic = weekdays.get(calendarMath.getCurrentWeekDay());
-        WeekdayComponent wc = new WeekdayComponent(wic.getName(), wic.getDayOfWeek());
+        WeekdayComponent wc = new WeekdayComponent(wic.getName(), wic.getShortName(), wic.getDayOfWeek());
 
         if (tick == 1) {
             broadcastStarts(tDay, tMonth, tYear, dc, wc);

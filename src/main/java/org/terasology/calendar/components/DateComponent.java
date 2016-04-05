@@ -21,11 +21,13 @@ public class DateComponent implements Component {
     private int day;
     private int month;
     private int year;
+    private int gameDay;
 
-    public DateComponent(int newDay, int newMonth, int newYear) {
+    public DateComponent(int newDay, int newMonth, int newYear, int totalDay) {
         day = day;
         month = month;
         year = year;
+        gameDay = totalDay;
     }
 
     public int getDay() {
@@ -38,5 +40,9 @@ public class DateComponent implements Component {
 
     public int getYear() {
         return year;
+    }
+
+    public int getGameDay() {
+        return gameDay;
     }
 }

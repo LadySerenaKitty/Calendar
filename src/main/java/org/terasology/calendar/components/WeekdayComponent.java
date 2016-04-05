@@ -20,13 +20,15 @@ import org.terasology.entitySystem.Component;
 public class WeekdayComponent implements Component {
 
     private String name;
+    private String shortName;
     private int dayOfWeek;
 
     private WeekdayComponent() {
     }
 
-    public WeekdayComponent(String dayName, int dayWeek) {
+    public WeekdayComponent(String dayName, String shortDayName, int dayWeek) {
         name = dayName;
+        shortName = shortDayName;
         dayOfWeek = dayWeek;
     }
 
@@ -36,5 +38,9 @@ public class WeekdayComponent implements Component {
 
     public String getName() {
         return name;
+    }
+
+    public String getShortName() {
+        return shortName;
     }
 }

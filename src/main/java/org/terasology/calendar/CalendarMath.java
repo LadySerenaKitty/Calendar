@@ -33,6 +33,7 @@ public class CalendarMath {
     private int daysYear; // days in a year
 
     // internal storage
+    private int currentDay;
     private int currentYear;
     private int currentYearMonth;
     private int currentGameMonth;
@@ -52,10 +53,16 @@ public class CalendarMath {
         worldTime = timer;
     }
 
+    public CalendarMath dupicate() {
+        return new CalendarMath(daysWeek, daysMonth, daysYear, worldTime);
+    }
+
     // do the thing
     public void updateToday() {
-
-        int calcDays = TeraMath.floorToInt(worldTime.getDays());
+        updateToday(TeraMath.floorToInt(worldTime.getDays()));
+    }
+    public void updateToday(int calcDays) {
+        currentDay = calcDays;
         // calculate the year
         currentYear = TeraMath.floorToInt(calcDays / daysYear) + 1;
         currentYearDay = calcDays % daysYear;
@@ -71,6 +78,10 @@ public class CalendarMath {
         // TODO fix weekInYear, currently every year starts a new week
         currentGameWeek = TeraMath.floorToInt(calcDays / daysWeek);
         currentYearWeek = currentGameWeek % TeraMath.floorToInt(daysYear / daysWeek);
+    }
+
+    public int getCurrentDay() {
+        return currentDay;
     }
 
     public int getCurrentGameMonth() {

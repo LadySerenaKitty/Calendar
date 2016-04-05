@@ -2,6 +2,7 @@
     "Calendar": {
         "name": "Gregorian",
         "daysPerMonth": 30,
+        "defaultFormat": "E d MMM yyyy",
 
         "months": [
             {

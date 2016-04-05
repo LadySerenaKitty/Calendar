@@ -28,6 +28,7 @@ import org.terasology.entitySystem.Component;
 public class CalendarComponent implements Component {
     private int daysPerMonth;
     private String name;
+    private String defaultFormat;
 
     private List<HolidayInitComponent> holidays;
     private List<MonthInitComponent> months;
@@ -41,10 +42,11 @@ public class CalendarComponent implements Component {
         weekdays = new ArrayList<>();
     }
 
-    public CalendarComponent(int monthLength, String calendarName,
+    public CalendarComponent(int monthLength, String calendarName, String format,
             List<HolidayInitComponent> holidayList, List<MonthInitComponent> monthList, List<SeasonInitComponent> seasonList, List<WeekdayInitComponent> weekdayList) {
         daysPerMonth = monthLength;
         name = calendarName;
+        defaultFormat = format;
 
         holidays = holidayList;
         months = monthList;
@@ -58,6 +60,10 @@ public class CalendarComponent implements Component {
 
     public String getName() {
         return name;
+    }
+
+    public String getDefaultFormat() {
+        return defaultFormat;
     }
 
     public List<HolidayInitComponent> getHolidays() {

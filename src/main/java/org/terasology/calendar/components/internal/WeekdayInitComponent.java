@@ -22,13 +22,15 @@ import org.terasology.reflection.MappedContainer;
 public class WeekdayInitComponent implements Component {
 
     public String name;
+    public String shortName;
     public int dayOfWeek;
 
     public WeekdayInitComponent() {
     }
 
-    public WeekdayInitComponent(String dayName, int dayWeek) {
+    public WeekdayInitComponent(String dayName, String shortDayName, int dayWeek) {
         name = dayName;
+        shortName = shortDayName;
         dayOfWeek = dayWeek;
     }
 }
