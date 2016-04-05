@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 MovingBlocks
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.terasology.calendar.components;
 
 import java.util.ArrayList;
@@ -13,6 +28,7 @@ import org.terasology.entitySystem.Component;
 public class CalendarComponent implements Component {
     private int daysPerMonth;
     private String name;
+    private String defaultFormat;
 
     private List<HolidayInitComponent> holidays;
     private List<MonthInitComponent> months;
@@ -26,9 +42,11 @@ public class CalendarComponent implements Component {
         weekdays = new ArrayList<>();
     }
 
-    public CalendarComponent(int monthLength, String calendarName, List<HolidayInitComponent> holidayList, List<MonthInitComponent> monthList, List<SeasonInitComponent> seasonList, List<WeekdayInitComponent> weekdayList) {
+    public CalendarComponent(int monthLength, String calendarName, String format,
+            List<HolidayInitComponent> holidayList, List<MonthInitComponent> monthList, List<SeasonInitComponent> seasonList, List<WeekdayInitComponent> weekdayList) {
         daysPerMonth = monthLength;
         name = calendarName;
+        defaultFormat = format;
 
         holidays = holidayList;
         months = monthList;
@@ -44,8 +62,14 @@ public class CalendarComponent implements Component {
         return name;
     }
 
+    public String getDefaultFormat() {
+        return defaultFormat;
+    }
+
     public List<HolidayInitComponent> getHolidays() {
-        if ( holidays == null ) { return Collections.EMPTY_LIST; }
+        if (holidays == null) {
+            return Collections.EMPTY_LIST;
+        }
         return holidays;
     }
 
@@ -54,7 +78,9 @@ public class CalendarComponent implements Component {
     }
 
     public List<MonthInitComponent> getMonths() {
-        if ( months == null ) { return Collections.EMPTY_LIST; }
+        if (months == null) {
+            return Collections.EMPTY_LIST;
+        }
         return months;
     }
 
@@ -63,7 +89,9 @@ public class CalendarComponent implements Component {
     }
 
     public List<SeasonInitComponent> getSeasons() {
-        if ( seasons == null ) { return Collections.EMPTY_LIST; }
+        if (seasons == null) {
+            return Collections.EMPTY_LIST;
+        }
         return seasons;
     }
 
@@ -72,7 +100,9 @@ public class CalendarComponent implements Component {
     }
 
     public List<WeekdayInitComponent> getWeekdays() {
-        if ( weekdays == null ) { return Collections.EMPTY_LIST; }
+        if (weekdays == null) {
+            return Collections.EMPTY_LIST;
+        }
         return weekdays;
     }
 
