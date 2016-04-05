@@ -5,15 +5,15 @@ import org.terasology.reflection.MappedContainer;
 
 @MappedContainer
 public class SeasonComponent implements Component {
-    public int startDay;
-    public int startMonth;
+    private int startDay;
+    private int startMonth;
 
-    public int endDay;
-    public int endMonth;
+    private int endDay;
+    private int endMonth;
 
-    public String name;
+    private String name;
 
-    public SeasonComponent() {
+    private SeasonComponent() {
     }
 
     public SeasonComponent(int sDay, int sMonth, int eDay, int eMonth, String seasonName) {

@@ -5,28 +5,21 @@ import org.terasology.reflection.MappedContainer;
 
 @MappedContainer
 public class MonthComponent implements Component {
-    public int length;
-    public int month;
+    private int month;
 
-    public String shortName;
-    public String mediumName;
-    public String longName;
+    private String shortName;
+    private String mediumName;
+    private String longName;
 
-    public MonthComponent() {
+    private MonthComponent() {
     }
 
-    public MonthComponent(int monthLength, int monthNumber, String sName, String mName, String lName) {
-        length = monthLength;
+    public MonthComponent(int monthNumber, String sName, String mName, String lName) {
         month = monthNumber;
 
         shortName = sName;
         mediumName = mName;
         longName = lName;
-    }
-
-
-    public int getLength() {
-        return length;
     }
 
    public int getMonth() {

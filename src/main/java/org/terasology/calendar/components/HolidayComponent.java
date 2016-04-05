@@ -6,11 +6,11 @@ import org.terasology.reflection.MappedContainer;
 @MappedContainer
 public class HolidayComponent implements Component {
 
-    public int day;
-    public int month;
-    public int length;
+    private int day;
+    private int month;
+    private int length;
 
-    public String name;
+    private String name;
 
     private HolidayComponent() {
     }
