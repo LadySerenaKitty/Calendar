@@ -185,21 +185,24 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
     @Override
     public void update(float delta) {
         int day = TeraMath.floorToInt(worldTime.getDays());
-        int tick = TeraMath.floorToInt(worldTime.getDays() * 1000);
+        int tick = TeraMath.floorToInt(worldTime.getDays() * 1000) % 1000;
 
         /*if ( day == prevDay ) {
             return;
         } // */
 
-        if ( (1 < tick && tick < 999) || tick == 0 || tick == prevTick ) {
+        if ( tick != 1 && tick != 999 ) {
             return;
+        }
+
+        if ( day != prevDay ) {
+            calendarMath.updateToday();
+            broadcastCalendar();
         }
 
         prevDay = day;
         prevTick = tick;
 
-        calendarMath.updateToday();
-        broadcastCalendar();
 
         int tDay = calendarMath.getCurrentMonthDay();
         int tMonth = calendarMath.getCurrentYearMonth();
