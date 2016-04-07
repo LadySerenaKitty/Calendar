@@ -77,7 +77,7 @@ public class CalendarMath {
 
     /**
      * Calculate the values to a specific game day.
-     * @param calcDays
+     * @param calcDays The game day to calculate with.
      */
     public void updateToday(int calcDays) {
         currentDay = calcDays;
@@ -140,7 +140,7 @@ public class CalendarMath {
 
     /**
      * The day of the week.
-     * @return
+     * @return The day of the week.
      */
     public int getCurrentWeekDay() {
         return currentWeekDay;
