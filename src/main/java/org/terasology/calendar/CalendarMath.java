@@ -46,6 +46,13 @@ public class CalendarMath {
     private int currentYearWeek;
     private int currentGameWeek;
 
+    /**
+     * Creates a new CalendarMath object.
+     * @param daysInWeek Number of days in a week.
+     * @param daysInMonth Number of days in a month.
+     * @param daysInYear Number of days in a year.
+     * @param timer This is used for operations that need to work on the current date.
+     */
     public CalendarMath(int daysInWeek, int daysInMonth, int daysInYear, WorldTime timer) {
         daysWeek = daysInWeek;
         daysMonth = daysInMonth;
@@ -53,14 +60,25 @@ public class CalendarMath {
         worldTime = timer;
     }
 
+    /**
+     * Duplicates the CalendarMath object.
+     * @return The new CalendarMath object.
+     */
     public CalendarMath dupicate() {
         return new CalendarMath(daysWeek, daysMonth, daysYear, worldTime);
     }
 
-    // do the thing
+    /**
+     * Calculates the values based on the current game day.
+     */
     public void updateToday() {
         updateToday(TeraMath.floorToInt(worldTime.getDays()));
     }
+
+    /**
+     * Calculate the values to a specific game day.
+     * @param calcDays
+     */
     public void updateToday(int calcDays) {
         currentDay = calcDays;
         // calculate the year
@@ -80,67 +98,130 @@ public class CalendarMath {
         currentYearWeek = currentGameWeek % TeraMath.floorToInt(daysYear / daysWeek);
     }
 
+    /**
+     * The game day, total days elapsed in the game.
+     * @return The day, based on total days elapsed in game.
+     */
     public int getCurrentDay() {
         return currentDay;
     }
 
+    /**
+     * The month, based on total months elapsed in game.
+     * @return The month.
+     */
     public int getCurrentGameMonth() {
         return currentGameMonth;
     }
 
+    /**
+     * The week, based on total weeks elapsed in game.
+     * @return The week of the game.
+     */
     public int getCurrentGameWeek() {
         return currentGameWeek;
     }
 
+    /**
+     * The day of the month.
+     * @return The day of the month.
+     */
     public int getCurrentMonthDay() {
         return currentMonthDay + 1;
     }
 
+    /**
+     * The week of the month.
+     * @return The week number.
+     */
     public int getCurrentMonthWeek() {
         return currentMonthWeek;
     }
 
+    /**
+     * The day of the week.
+     * @return
+     */
     public int getCurrentWeekDay() {
         return currentWeekDay;
     }
 
+    /**
+     * The year.
+     * @return The year.
+     */
     public int getCurrentYear() {
         return currentYear;
     }
 
+    /**
+     * The day number of the year.
+     * @return Day of the year.
+     */
     public int getCurrentYearDay() {
         return currentYearDay + 1;
     }
 
+    /**
+     * The month of the year.
+     * @return Month of the year.
+     */
     public int getCurrentYearMonth() {
         return currentYearMonth;
     }
 
+    /**
+     * The week of the year.
+     * @return Week of year.
+     */
     public int getCurrentYearWeek() {
         return currentYearWeek;
     }
 
-    // utility stuffies
+    /**
+     * Determines if the day is the first day of a year.
+     * @return true if the day marks the beginning of a new year.
+     */
     public boolean isYearStart() {
         return (currentYearDay == 0);
     }
 
+    /**
+     * Determines if the day is the first day of a month.
+     * @return true if the day marks the beginning of a new month.
+     */
     public boolean isMonthStart() {
         return (currentMonthDay == 0);
     }
 
+    /**
+     * Determines if the day is the first day of a week.
+     * @return true if the day marks the beginning of a new week.
+     */
     public boolean isWeekStart() {
         return (currentWeekDay == 0);
     }
 
+    /**
+     * Determines if the day is the last of a year.
+     * @return true if the day marks the ending of a year.
+     */
     public boolean isYearEnd() {
         return (getCurrentYearDay() == daysYear);
     }
 
+    /**
+     * Determines if the day is the last of a month.
+     * @return true if the day marks the ending of a month.
+     */
     public boolean isMonthEnd() {
         return (getCurrentMonthDay() == daysMonth);
     }
 
+    /**
+     * Determines if the day is the last of a week.
+     * @return true if the day marks the ending of a week.
+     */
     public boolean isWeekEnd() {
         return (getCurrentWeekDay() == (daysWeek - 1));
     }

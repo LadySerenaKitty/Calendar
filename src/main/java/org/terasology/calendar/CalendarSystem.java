@@ -62,6 +62,10 @@ import org.terasology.registry.Share;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.time.WorldTime;
 
+/** The Calendar System.
+ * This system is responsible for tracking the years, months, weeks, and days from a provided world file.
+ * Months are always the same length, but seasons and holidays can vary in length.
+ */
 @RegisterSystem
 @Share(value = CalendarSystem.class)
 public class CalendarSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
@@ -184,6 +188,9 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
     public void shutdown() {
     }
 
+    /**
+     * Broadcasts a message with the new date.
+     */
     private void broadcastCalendar() {
         String message = notifyClientString();
         for (EntityRef client : entityManager.getEntitiesWith(ClientComponent.class)) {
@@ -195,6 +202,10 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
     }
 
+    /**
+     * Generates the date string used to notify when a new day has arrived.
+     * @return Person-readable date string.
+     */
     private String notifyClientString() {
         StringBuilder sb = new StringBuilder("New day: ");
         sb.append(CalendarFormatter.formatDate());
@@ -246,6 +257,14 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
     }
 
+    /**
+     * Dispatches events upon day entry.
+     * @param tDay The current day.
+     * @param tMonth The current month.
+     * @param tYear The current year.
+     * @param dc A {@link DateComponent} describing the new day.
+     * @param wc A {@link WeekdayComponent} containing the current day of the week.
+     */
     private void broadcastStarts(int tDay, int tMonth, int tYear, DateComponent dc, WeekdayComponent wc) {
         if (calendarMath.isYearStart()) {
             broadcastEvent(new OnYearEvent(tYear, tYear), dc, wc);
@@ -295,6 +314,14 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
     }
 
+    /**
+     * Dispatches events upon day entry.
+     * @param tDay The current day.
+     * @param tMonth The current month.
+     * @param tYear The current year.
+     * @param dc A {@link DateComponent} describing the new day.
+     * @param wc A {@link WeekdayComponent} containing the current day of the week.
+     */
     private void broadcastEnds(int tDay, int tMonth, int tYear, DateComponent dc, WeekdayComponent wc) {
         if (calendarMath.isYearEnd()) {
             broadcastEvent(new OnYearEvent(tYear, tYear), dc, wc);
@@ -344,6 +371,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
     }
 
+    /**
+     * Dispatches an event for the chat system to receive.
+     * @param evt The event to broadcast.
+     * @param comp Components to broadcast with the event.
+     */
     private void broadcastEvent(Event evt, Component... comp) {
         EntityRef ent = entityManager.create();
         for (Component c : comp) {
