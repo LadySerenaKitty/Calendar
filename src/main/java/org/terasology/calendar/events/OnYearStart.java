@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The year start event.  This is fired at the beginning of the day when a year begins.
+ */
 public class OnYearStart extends OnYearEvent {
 
+    /**
+     * Creates the year event.
+     * @param yearNumber The year number.
+     * @param unitNumber Not used.
+     */
     public OnYearStart(int yearNumber, int unitNumber) {
         super(yearNumber, unitNumber);
     }
