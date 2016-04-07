@@ -18,17 +18,43 @@ package org.terasology.calendar.components.internal;
 import org.terasology.entitySystem.Component;
 import org.terasology.reflection.MappedContainer;
 
+/**
+ * Definition of a month.
+ */
 @MappedContainer
 public class MonthInitComponent implements Component {
+
+    /**
+     * Month number of the year, starting at 1.
+     */
     public int month;
 
+    /**
+     * Short name of the month (ex: Jan).
+     */
     public String shortName;
+    /**
+     * Medium-length name of the month.
+     */
     public String mediumName;
+    /**
+     * Long name of the month (ex: January).
+     */
     public String longName;
 
+    /**
+     * Creates an empty month.
+     */
     public MonthInitComponent() {
     }
 
+    /**
+     * Creates a month with all the specified information.
+     * @param monthNumber Number of the month position in the year, starting at 1.
+     * @param sName Short name of the month (ex: Jan).
+     * @param mName Medium-length name of the month.
+     * @param lName Long name of the month (ex: January).
+     */
     public MonthInitComponent(int monthNumber, String sName, String mName, String lName) {
         month = monthNumber;
 

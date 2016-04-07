@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The main month event.  This is always fired in conjunction with {@link OnMonthStart} or {@link OnMonthEnd}.
+ */
 public class OnMonthEvent extends OnCalendarEvent {
 
+    /**
+     * Creates the month event.
+     * @param yearNumber The year in which the month is occurring.
+     * @param monthNumber  The index number of the month.
+     */
     public OnMonthEvent(int yearNumber, int monthNumber) {
         super(yearNumber, monthNumber);
     }

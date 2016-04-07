@@ -25,16 +25,46 @@ import org.terasology.calendar.components.internal.SeasonInitComponent;
 import org.terasology.calendar.components.internal.WeekdayInitComponent;
 import org.terasology.entitySystem.Component;
 
+/**
+ * A copy of the calendar data which is used to initialize the {@link CalendarSystem}.
+ */
 public class CalendarComponent implements Component {
+
+    /**
+     * Number of days per month.
+     */
     private int daysPerMonth;
+
+    /**
+     * Name of the calendar.
+     */
     private String name;
+
+    /**
+     * Default date format for use with {@link CalendarFormatter}.
+     */
     private String defaultFormat;
 
+    /**
+     * List of holidays in the calendar configuration.
+     */
     private List<HolidayInitComponent> holidays;
+    /**
+     * List of months in the calendar configuration.
+     */
     private List<MonthInitComponent> months;
+    /**
+     * List of seasons in the calendar configuration.
+     */
     private List<SeasonInitComponent> seasons;
+    /**
+     * List of weekdays in the calendar configuration.
+     */
     private List<WeekdayInitComponent> weekdays;
 
+    /**
+     * Constructs a new, empty calendar configuration.
+     */
     private CalendarComponent() {
         holidays = new ArrayList<>();
         months = new ArrayList<>();
@@ -42,6 +72,16 @@ public class CalendarComponent implements Component {
         weekdays = new ArrayList<>();
     }
 
+    /**
+     * Creates a calendar configuration component.
+     * @param monthLength Number of days per month.
+     * @param calendarName Name of the calendar.
+     * @param format Default date format to be used with {@link CalendarFormatter}.
+     * @param holidayList List of holidays.
+     * @param monthList List of months.
+     * @param seasonList List of seasons.
+     * @param weekdayList List of weekdays.
+     */
     public CalendarComponent(int monthLength, String calendarName, String format,
             List<HolidayInitComponent> holidayList, List<MonthInitComponent> monthList, List<SeasonInitComponent> seasonList, List<WeekdayInitComponent> weekdayList) {
         daysPerMonth = monthLength;
@@ -54,18 +94,34 @@ public class CalendarComponent implements Component {
         weekdays = weekdayList;
    }
 
+    /**
+     * Get the number of days per month.
+     * @return Number of days per month.
+     */
     public int getDaysPerMonth() {
         return daysPerMonth;
     }
 
+    /**
+     * Get the name of the calendar.
+     * @return Calendar name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get the default date format for use with {@link CalendarFormatter}.
+     * @return Default date format.
+     */
     public String getDefaultFormat() {
         return defaultFormat;
     }
 
+    /**
+     * Get the list of holidays.
+     * @return List of holidays.
+     */
     public List<HolidayInitComponent> getHolidays() {
         if (holidays == null) {
             return Collections.EMPTY_LIST;
@@ -73,10 +129,18 @@ public class CalendarComponent implements Component {
         return holidays;
     }
 
+    /**
+     * Get the holiday list iterator.
+     * @return List iterator.
+     */
     public Iterator<HolidayInitComponent> getHolidayIterator() {
         return getHolidays().iterator();
     }
 
+    /**
+     * Get the list of months.
+     * @return List of months.
+     */
     public List<MonthInitComponent> getMonths() {
         if (months == null) {
             return Collections.EMPTY_LIST;
@@ -84,10 +148,18 @@ public class CalendarComponent implements Component {
         return months;
     }
 
+    /**
+     * Get the month list iterator.
+     * @return List iterator.
+     */
     public Iterator<MonthInitComponent> getMonthIterator() {
         return getMonths().iterator();
     }
 
+    /**
+     * Get the list of seasons.
+     * @return List of seasons.
+     */
     public List<SeasonInitComponent> getSeasons() {
         if (seasons == null) {
             return Collections.EMPTY_LIST;
@@ -95,10 +167,18 @@ public class CalendarComponent implements Component {
         return seasons;
     }
 
+    /**
+     * Get the season list iterator.
+     * @return List iterator.
+     */
     public Iterator<SeasonInitComponent> getSeasonIterator() {
         return getSeasons().iterator();
     }
 
+    /**
+     * Get the list of weekdays.
+     * @return List of weekdays.
+     */
     public List<WeekdayInitComponent> getWeekdays() {
         if (weekdays == null) {
             return Collections.EMPTY_LIST;
@@ -106,6 +186,10 @@ public class CalendarComponent implements Component {
         return weekdays;
     }
 
+    /**
+     * Get the weekday list iterator.
+     * @return List iterator.
+     */
     public Iterator<WeekdayInitComponent> getWeekdayIterator() {
         return getWeekdays().iterator();
     }

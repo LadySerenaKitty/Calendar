@@ -18,17 +18,43 @@ package org.terasology.calendar.components;
 import org.terasology.entitySystem.Component;
 import org.terasology.reflection.MappedContainer;
 
+/**
+ * Complete definition of a month.
+ */
 @MappedContainer
 public class MonthComponent implements Component {
+
+    /**
+     * Month number of the year, starting at 1.
+     */
     private int month;
 
+    /**
+     * Short name of the month (ex: Jan).
+     */
     private String shortName;
+    /**
+     * Medium-length name of the month.
+     */
     private String mediumName;
+    /**
+     * Long name of the month (ex: January).
+     */
     private String longName;
 
+    /**
+     * Creates an empty month.
+     */
     private MonthComponent() {
     }
 
+    /**
+     * Creates a month with all the specified information.
+     * @param monthNumber Number of the month position in the year, starting at 1.
+     * @param sName Short name of the month (ex: Jan).
+     * @param mName Medium-length name of the month.
+     * @param lName Long name of the month (ex: January).
+     */
     public MonthComponent(int monthNumber, String sName, String mName, String lName) {
         month = monthNumber;
 
@@ -37,24 +63,44 @@ public class MonthComponent implements Component {
         longName = lName;
     }
 
+    /**
+     * Gets the number of the month, starting at 1.
+     * @return Number of month.
+     */
    public int getMonth() {
         return month;
     }
 
+   /**
+    * Gets the name of the month.
+    * @return Name of month.
+    * @see #getLongName()
+    */
     public String getName() {
         return longName;
     }
 
+    /**
+     * Gets the short name of the month (ex: Jan).
+     * @return Short name of month.
+     */
     public String getShortName() {
         return shortName;
     }
 
+    /**
+     * Gets the medium-length name of the month.
+     * @return Medium-length name of month.
+     */
     public String getMediumName() {
         return mediumName;
     }
 
+    /**
+     * Gets the long name of the month (ex: January).
+     * @return Long name of month.
+     */
     public String getLongName() {
         return longName;
     }
-
 }

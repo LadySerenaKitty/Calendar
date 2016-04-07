@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The holiday end event.  This is fired at the end of the day when a holiday ends.
+ */
 public class OnHolidayEnd extends OnHolidayEvent {
 
+    /**
+     * Creates the holiday event.
+     * @param yearNumber The year in which the holiday is ending.
+     * @param unitNumber The index number of the holiday.
+     */
     public OnHolidayEnd(int yearNumber, int unitNumber) {
         super(yearNumber, unitNumber);
     }
