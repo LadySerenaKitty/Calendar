@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The main holiday event.  This is always fired in conjunction with {@link OnHolidayStart} or {@link OnHolidayEnd}.
+ */
 public class OnHolidayEvent extends OnCalendarEvent {
 
+    /**
+     * Creates the holiday event.
+     * @param yearNumber The year in which the holiday is occurring.
+     * @param unitNumber The index number of the holiday.
+     */
     public OnHolidayEvent(int yearNumber, int unitNumber) {
         super(yearNumber, unitNumber);
     }

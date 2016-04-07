@@ -180,7 +180,7 @@ public class CalendarMath {
 
     /**
      * Determines if the day is the first day of a year.
-     * @return true if the day marks the beginning of a new year.
+     * @return {@code true} if the day marks the beginning of a new year.
      */
     public boolean isYearStart() {
         return (currentYearDay == 0);
@@ -188,7 +188,7 @@ public class CalendarMath {
 
     /**
      * Determines if the day is the first day of a month.
-     * @return true if the day marks the beginning of a new month.
+     * @return {@code true} if the day marks the beginning of a new month.
      */
     public boolean isMonthStart() {
         return (currentMonthDay == 0);
@@ -196,7 +196,7 @@ public class CalendarMath {
 
     /**
      * Determines if the day is the first day of a week.
-     * @return true if the day marks the beginning of a new week.
+     * @return {@code true} if the day marks the beginning of a new week.
      */
     public boolean isWeekStart() {
         return (currentWeekDay == 0);
@@ -204,7 +204,7 @@ public class CalendarMath {
 
     /**
      * Determines if the day is the last of a year.
-     * @return true if the day marks the ending of a year.
+     * @return {@code true} if the day marks the ending of a year.
      */
     public boolean isYearEnd() {
         return (getCurrentYearDay() == (daysYear - 1));
@@ -212,7 +212,7 @@ public class CalendarMath {
 
     /**
      * Determines if the day is the last of a month.
-     * @return true if the day marks the ending of a month.
+     * @return {@code true} if the day marks the ending of a month.
      */
     public boolean isMonthEnd() {
         return (getCurrentMonthDay() == (daysMonth - 1));
@@ -220,7 +220,7 @@ public class CalendarMath {
 
     /**
      * Determines if the day is the last of a week.
-     * @return true if the day marks the ending of a week.
+     * @return {@code true} if the day marks the ending of a week.
      */
     public boolean isWeekEnd() {
         return (getCurrentWeekDay() == (daysWeek - 1));
