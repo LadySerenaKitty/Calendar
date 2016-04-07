@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The season end event.  This is fired at the end of the day when a season ends.
+ */
 public class OnSeasonEnd extends OnSeasonEvent {
 
+    /**
+     * Creates the season event.
+     * @param yearNumber The year in which the season is ending.
+     * @param unitNumber The index number of the season.
+     */
     public OnSeasonEnd(int yearNumber, int unitNumber) {
         super(yearNumber, unitNumber);
     }
