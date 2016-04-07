@@ -23,14 +23,33 @@ import org.terasology.reflection.MappedContainer;
  */
 @MappedContainer
 public class SeasonComponent implements Component {
+
+    /**
+     * The starting day of month.
+     */
     private int startDay;
+    /**
+     * The starting month of year.
+     */
     private int startMonth;
 
+    /**
+     * The ending day of month.
+     */
     private int endDay;
+    /**
+     * The ending month of year.
+     */
     private int endMonth;
 
+    /**
+     * Length (in days) of the season.
+     */
     private int length;
 
+    /**
+     * Name of the season.
+     */
     private String name;
 
     /**

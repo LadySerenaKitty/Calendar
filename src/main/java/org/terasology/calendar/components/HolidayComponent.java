@@ -24,14 +24,32 @@ import org.terasology.reflection.MappedContainer;
 @MappedContainer
 public class HolidayComponent implements Component {
 
-    private int day;
-    private int month;
+    /**
+     * The starting day of month.
+     */
+    private int startDay;
+    /**
+     * The starting month of year.
+     */
+    private int startMonth;
 
+    /**
+     * The ending day of month.
+     */
     private int endDay;
+    /**
+     * The ending month of year.
+     */
     private int endMonth;
 
+    /**
+     * Length (in days) of the holiday.
+     */
     private int length;
 
+    /**
+     * Name of the holiday.
+     */
     private String name;
 
     /**
@@ -50,8 +68,8 @@ public class HolidayComponent implements Component {
      * @param calendarName The name of the holiday.
      */
     public HolidayComponent(int calendarStartDay, int calendarStartMonth, int calendarEndDay, int calendarEndMonth, int calendarLength, String calendarName) {
-        day = calendarStartDay;
-        month = calendarStartMonth;
+        startDay = calendarStartDay;
+        startMonth = calendarStartMonth;
         endDay = calendarEndDay;
         endMonth = calendarEndMonth;
         length = calendarLength;
@@ -64,7 +82,7 @@ public class HolidayComponent implements Component {
      * @return Day of month.
      */
     public int getStartDay() {
-        return day;
+        return startDay;
     }
 
     /**
@@ -72,7 +90,7 @@ public class HolidayComponent implements Component {
      * @return Month of year.
      */
    public int getStartMonth() {
-        return month;
+        return startMonth;
     }
 
    /**

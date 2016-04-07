@@ -18,19 +18,49 @@ package org.terasology.calendar.components.internal;
 import org.terasology.entitySystem.Component;
 import org.terasology.reflection.MappedContainer;
 
+/**
+ * Definition of a holiday.
+ */
 @MappedContainer
 public class HolidayInitComponent implements Component {
 
+    /**
+     * The starting day of month.
+     */
     public int startDay;
+    /**
+     * The starting month of year.
+     */
     public int startMonth;
+
+    /**
+     * The ending day of month.
+     */
     public int endDay;
+    /**
+     * The ending month of year.
+     */
     public int endMonth;
 
+    /**
+     * Name of the holiday.
+     */
     public String name;
 
+    /**
+     * Creates an empty holiday.
+     */
     public HolidayInitComponent() {
     }
 
+    /**
+     * Creates a holiday with all the specified information.
+     * @param calendarStartDay The starting day of month.
+     * @param calendarStartMonth The starting month of year.
+     * @param calendarEndDay The ending day of month.
+     * @param calendarEndMonth The ending month of year.
+     * @param calendarName The name of the holiday.
+     */
     public HolidayInitComponent(int calendarStartDay, int calendarStartMonth, int calendarEndDay, int calendarEndMonth, String calendarName) {
         startDay = calendarStartDay;
         startMonth = calendarStartMonth;
