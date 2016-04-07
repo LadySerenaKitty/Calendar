@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The main season event.  This is always fired in conjunction with {@link OnSeasonStart} or {@link OnSeasonEnd}.
+ */
 public class OnSeasonEvent extends OnCalendarEvent {
 
+    /**
+     * Creates the season event.
+     * @param yearNumber The year in which the season is occurring.
+     * @param unitNumber The index number of the season.
+     */
     public OnSeasonEvent(int yearNumber, int unitNumber) {
         super(yearNumber, unitNumber);
     }

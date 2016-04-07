@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The week end event.  This is fired at the end of the day when a week ends.
+ */
 public class OnWeekEnd extends OnWeekEvent {
 
+    /**
+     * Creates the week event.
+     * @param yearNumber The year in which the week is ending.
+     * @param unitNumber The week number.
+     */
     public OnWeekEnd(int yearNumber, int unitNumber) {
         super(yearNumber, unitNumber);
     }

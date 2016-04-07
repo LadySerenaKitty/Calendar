@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The season start event.  This is fired at the beginning of the day when a season begins.
+ */
 public class OnSeasonStart extends OnSeasonEvent {
 
+    /**
+     * Creates the season event.
+     * @param yearNumber The year in which the season is occurring.
+     * @param unitNumber The index number of the season.
+     */
     public OnSeasonStart(int yearNumber, int unitNumber) {
         super(yearNumber, unitNumber);
     }

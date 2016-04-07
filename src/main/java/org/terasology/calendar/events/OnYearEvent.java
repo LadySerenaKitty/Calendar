@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The main year event.  This is always fired in conjunction with {@link OnYearStart} or {@link OnYearEnd}.
+ */
 public class OnYearEvent extends OnCalendarEvent {
 
+    /**
+     * Creates the year event.
+     * @param yearNumber The year number.
+     * @param unitNumber Not used.
+     */
     public OnYearEvent(int yearNumber, int unitNumber) {
         super(yearNumber, 0);
     }

@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The main week event.  This is always fired in conjunction with {@link OnWeekStart} or {@link OnWeekEnd}.
+ */
 public class OnWeekEvent extends OnCalendarEvent {
 
+    /**
+     * Creates the week event.
+     * @param yearNumber The year in which the week is occurring.
+     * @param unitNumber The week number.
+     */
     public OnWeekEvent(int yearNumber, int unitNumber) {
         super(yearNumber, unitNumber);
     }

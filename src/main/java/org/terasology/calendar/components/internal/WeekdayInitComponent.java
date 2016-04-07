@@ -21,13 +21,32 @@ import org.terasology.reflection.MappedContainer;
 @MappedContainer
 public class WeekdayInitComponent implements Component {
 
+    /**
+     * Name of weekday (ex: Friday).
+     */
     public String name;
+    /**
+     * Short name of weekday (ex: Fri).
+     */
     public String shortName;
+    /**
+     * The day of the week, starting at 0.
+     */
     public int dayOfWeek;
 
+    /**
+     * Creates an empty weekday.
+     */
     public WeekdayInitComponent() {
     }
 
+
+    /**
+     * Creates a weekday with all the specified information.
+     * @param dayName Name of the weekday (ex: Friday).
+     * @param shortDayName Short name of weekday (ex: Fri).
+     * @param dayWeek Day of the week.
+     */
     public WeekdayInitComponent(String dayName, String shortDayName, int dayWeek) {
         name = dayName;
         shortName = shortDayName;

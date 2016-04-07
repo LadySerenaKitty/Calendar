@@ -225,6 +225,15 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
     }
 
+    /**
+     * Checks start dates and end dates against a specified date to see if the specified date is within the dates.
+     * @param cm Current date to query.
+     * @param startDay Starting day to check against.  Must be day in month.
+     * @param startMonth Starting month to check against.  Must be month in year.
+     * @param endDay Ending day to check against.  Must be day in month.
+     * @param endMonth Ending month to check against.  Must be month in year.
+     * @return true if the specified date is within the date range.
+     */
     public boolean isThingCurrent(CalendarMath cm, int startDay, int startMonth, int endDay, int endMonth) {
         int currentDay = cm.getCurrentMonthDay();
         int currentMonth = cm.getCurrentYearMonth();
@@ -263,14 +272,31 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return false;
     }
 
+    /**
+     * The day number of something, checked against the current date.
+     * @param gameDayWhenStarted The game day to calculate with.
+     * @return The day of something, for example, day 1 of a season.
+     */
     public int dayOf(int gameDayWhenStarted) {
         return gameDayWhenStarted - calendarMath.getCurrentDay() + 1;
     }
 
+    /**
+     * The day number of something, checked against the current date.
+     * @param date The date to calculate with.
+     * @return The day of something, for example, day 1 of a season.
+     */
     public int dayOf(DateComponent date) {
         return dayOf(date.getGameDay());
     }
 
+    /**
+     * The day number of something, checked against the current date.
+     * @param startDay  The day when the thing started.
+     * @param startMonth The month when the thing started.
+     * @param startYear The year when the thing started.
+     * @return The day of something, for example: day 1 of summer
+     */
     public int dayOf(int startDay, int startMonth, int startYear) {
         int days = startYear * getDaysPerYear();
         days += startMonth * getDaysPerMonth();
@@ -278,6 +304,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return dayOf(days);
     }
 
+    /**
+     * The current day of a holiday.
+     * @param holidayComponent The {@link HolidayComponent} to get the day of.
+     * @return The day of the specified holiday, for example: day 1 of fiesta week
+     */
     public int currentHolidayDay(HolidayComponent holidayComponent) {
         boolean decrement = false;
         if (holidayComponent.getStartMonth() > currentDateComponent.getMonth()) {
@@ -286,6 +317,10 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return dayOf(holidayComponent.getStartDay(), holidayComponent.getStartMonth() - 1, calendarMath.getCurrentYear() - (decrement?1:0));
     }
 
+    /**
+     * The current day of the current season.
+     * @return The current day of the current season, for example: day 1 of summer
+     */
     public int currentSeasonDay() {
         boolean decrement = false;
         if (currentSeasonComponent.getStartMonth() > currentDateComponent.getMonth()) {
@@ -294,26 +329,52 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return dayOf(currentSeasonComponent.getStartDay(), currentSeasonComponent.getStartMonth() - 1, calendarMath.getCurrentYear() - (decrement?1:0));
     }
 
+    /**
+     * Get the calendar math object.
+     * @return Duplicate of the {@link CalendarMath} object.
+     */
     public CalendarMath getMath() {
-        return calendarMath;
+        return calendarMath.dupicate();
     }
 
+    /**
+     * Get the default date format specified by the calendar configuration.
+     * @return The default date format.
+     * @see CalendarFormatter#formatDate(String, DateComponent)
+     */
     public String getDefaultFormat() {
         return calendar.getDefaultFormat();
     }
 
+    /**
+     * Get the number of days per week.
+     * @return Days per week.
+     */
     public int getDaysPerWeek() {
         return weekdays.size();
     }
 
+    /**
+     * Get the number of days per month.
+     * @return Days per month.
+     */
     public int getDaysPerMonth() {
         return calendar.getDaysPerMonth();
     }
 
+    /**
+     * Get the number of days per year.
+     * @return Days per year.
+     */
     public int getDaysPerYear() {
         return calendar.getDaysPerMonth() * months.size();
     }
 
+    /**
+     * Retrieve a holiday by its index number.
+     * @param number Index number.
+     * @return The {@link HolidayComponent} at the specified index.
+     */
     public HolidayComponent getHoliday(int number) {
         if (holidays.isEmpty()) {
             return null;
@@ -321,6 +382,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return holidays.get(number);
     }
 
+    /**
+     * Retrieve a month by its index number.
+     * @param number Index number.
+     * @return The {@link MonthComponent} at the specified index.
+     */
     public MonthComponent getMonth(int number) {
         if (months.isEmpty()) {
             return null;
@@ -328,6 +394,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return months.get(number);
     }
 
+    /**
+     * Retrieve a season by its index number.
+     * @param number Index number.
+     * @return The {@link SeasonComponent} at the specified index.
+     */
     public SeasonComponent getSeason(int number) {
         if (seasons.isEmpty()) {
             return null;
@@ -335,6 +406,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return seasons.get(number);
     }
 
+    /**
+     * Retrieve a holiday by its index number.
+     * @param number Index number.
+     * @return The {@link HolidayComponent} at the specified index.
+     */
     public WeekdayComponent getWeekday(int number) {
         if (weekdays.isEmpty()) {
             return null;
@@ -342,26 +418,54 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return weekdays.get(number);
     }
 
+    /**
+     * Retrieves the current date.
+     * @return The current date.
+     */
     public DateComponent getCurrentDate() {
         return getCurrentDate(false);
     }
 
+    /**
+     * Retrieves a list of all holidays currently in effect.
+     * @return List of holidays in effect.
+     */
     public List<HolidayComponent> getCurrentHolidays() {
         return getCurrentHolidays(false);
     }
 
+    /**
+     * Retrieves the current month.
+     * @return Current month.
+     */
     public MonthComponent getCurrentMonth() {
         return getCurrentMonth(false);
     }
 
+    /**
+     * Retrieves the current season.
+     * @return Current season.
+     */
     public SeasonComponent getCurrentSeason() {
         return getCurrentSeason(false);
     }
 
+    /**
+     * Retrieves the current weekday.
+     * @return Current weekday.
+     */
     public WeekdayComponent getCurrentWeekday() {
         return getCurrentWeekday(false);
     }
 
+    /**
+     * Calculates the length of a thing based on its start and end dates.
+     * @param startDay Starting day to check against.  Must be day in month.
+     * @param startMonth Starting month to check against.  Must be month in year.
+     * @param endDay Ending day to check against.  Must be day in month.
+     * @param endMonth Ending month to check against.  Must be month in year.
+     * @return The length (in days) of a thing.
+     */
     public int getCalendarLength(int startDay, int startMonth, int endDay, int endMonth) {
         if (startMonth == endMonth) { // within the month
             return (endDay - startDay) + 1;
@@ -375,6 +479,10 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         }
     }
 
+    /**
+     * Updates the stored values pertaining to the current date.
+     * @param force if {@code true}, forces an update
+     */
     private void update(boolean force) {
         currentDateComponent = getCurrentDate(force);
         currentHolidayComponents = getCurrentHolidays(force);
@@ -383,6 +491,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         currentWeekdayComponent = getCurrentWeekday(force);
     }
 
+    /**
+     * Retrieves the current date, or generates a new date if the day has changed.
+     * @param force If {@code true}, a new date is generated.
+     * @return The retrieved or generated date.
+     */
     private DateComponent getCurrentDate(boolean force) {
         if (currentDateComponent != null && !force) {
             return currentDateComponent;
@@ -391,6 +504,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return new DateComponent(calendarMath.getCurrentMonthDay(), calendarMath.getCurrentYearMonth(), calendarMath.getCurrentYear(), calendarMath.getCurrentDay());
     }
 
+    /**
+     * Retrieves the current list of active holidays, or generates a new list if the active holidays have changed.
+     * @param force If {@code true}, a new list of active holidays is generated.
+     * @return The retrieved or generated list of active holidays.
+     */
     private List<HolidayComponent> getCurrentHolidays(boolean force) {
         if (holidays.isEmpty()) {
             return new ArrayList<>();
@@ -411,6 +529,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return list;
     }
 
+    /**
+     * Retrieves the current month, or generates a new month if the month has changed.
+     * @param force If {@code true}, a new month is generated.
+     * @return The retrieved or generated month.
+     */
     private MonthComponent getCurrentMonth(boolean force) {
         if (currentMonthComponent != null && !force) {
             return currentMonthComponent;
@@ -419,6 +542,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return months.get(calendarMath.getCurrentYearMonth());
     }
 
+    /**
+     * Retrieves the current season, or generates a new season if the season has changed.
+     * @param force If {@code true}, a new season is generated.
+     * @return The retrieved or generated season.
+     */
     private SeasonComponent getCurrentSeason(boolean force) {
         if (currentSeasonComponent != null && !force) {
             return currentSeasonComponent;
@@ -436,6 +564,11 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return null;
     }
 
+    /**
+     * Retrieves the current weekday, or generates a new weekday if the day has changed.
+     * @param force If {@code true}, a new weekday is generated.
+     * @return The retrieved or generated weekday.
+     */
     private WeekdayComponent getCurrentWeekday(boolean force) {
         if (currentMonthComponent != null && !force) {
             return currentWeekdayComponent;
@@ -444,13 +577,27 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         return weekdays.get(calendarMath.getCurrentWeekDay());
     }
 
+    /**
+     * Calculates the length of a holiday.  Used only during Calendar setup.
+     * @param holidayInitComponent The holiday to calculate the length of.
+     * @return Length in days of the specified holiday.
+     */
     private int getCalendarLength(HolidayInitComponent holidayInitComponent) {
         return getCalendarLength(holidayInitComponent.startDay, holidayInitComponent.startMonth, holidayInitComponent.endDay, holidayInitComponent.endMonth);
     }
 
+    /**
+     * Calculates the length of a season.  Used only during Calendar setup.
+     * @param seasonInitComponent The season to calculate the length of.
+     * @return Length in days of the specified season.
+     */
     private int getCalendarLength(SeasonInitComponent seasonInitComponent) {
         return getCalendarLength(seasonInitComponent.startDay, seasonInitComponent.startMonth, seasonInitComponent.endDay, seasonInitComponent.endMonth);
     }
+
+    /**
+     * Dispatches events upon day entry.
+     */
     private void broadcastStarts() {
         int tYear = calendarMath.getCurrentYear();
         int tMonth = calendarMath.getCurrentYearMonth();
@@ -501,7 +648,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
     }
 
     /**
-     * Dispatches events upon day entry.
+     * Dispatches events upon day exit.
      */
     private void broadcastEnds() {
         int tYear = calendarMath.getCurrentYear();

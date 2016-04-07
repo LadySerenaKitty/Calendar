@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The year end event.  This is fired at the end of the day when a year ends.
+ */
 public class OnYearEnd extends OnYearEvent {
 
+    /**
+     * Creates the year event.
+     * @param yearNumber The year number.
+     * @param unitNumber Not used.
+     */
     public OnYearEnd(int yearNumber, int unitNumber) {
         super(yearNumber, unitNumber);
     }

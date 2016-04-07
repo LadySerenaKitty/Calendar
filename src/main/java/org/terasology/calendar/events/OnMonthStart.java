@@ -15,8 +15,16 @@
  */
 package org.terasology.calendar.events;
 
+/**
+ * The month start event.  This is fired at the beginning of the day when a month begins.
+ */
 public class OnMonthStart extends OnMonthEvent {
 
+    /**
+     * Creates the month event.
+     * @param yearNumber The year in which the month is occurring.
+     * @param monthNumber  The index number of the month.
+     */
     public OnMonthStart(int yearNumber, int monthNumber) {
         super(yearNumber, monthNumber);
     }
