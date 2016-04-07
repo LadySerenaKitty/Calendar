@@ -25,19 +25,12 @@ import org.terasology.calendar.components.DateComponent;
  */
 public class CalendarFormatter {
 
-    private static CalendarComponent calendarComponent = null;
-    private static CalendarMath calendarMath = null;
-    private static CalendarMath mather = null;
+    private CalendarComponent calendarComponent;
+    private CalendarMath calendarMath;
 
-    public static void init(CalendarComponent component, CalendarMath math) {
-        if (calendarComponent == null) {
-            calendarComponent = component;
-        }
-
-        if (calendarMath == null) {
-            calendarMath = math;
-            mather = math.dupicate();
-        }
+    public CalendarFormatter(CalendarComponent component, CalendarMath math) {
+        calendarComponent = component;
+        calendarMath = math.dupicate();
     }
 
     /**
@@ -45,7 +38,7 @@ public class CalendarFormatter {
      * @return Person-readable date string.
      * @see #formatDate(String, DateComponent)
      */
-    public static String formatDate() {
+    public String formatDate() {
         return formatDate(calendarComponent.getDefaultFormat());
     }
 
@@ -55,7 +48,7 @@ public class CalendarFormatter {
      * @return Person-readable date string.
      * @see #formatDate(String, DateComponent)
      */
-    public static String formatDate(DateComponent date) {
+    public String formatDate(DateComponent date) {
         return formatDate(calendarComponent.getDefaultFormat(), date);
     }
 
@@ -65,12 +58,12 @@ public class CalendarFormatter {
      * @return Person-readable date string.
      * @see #formatDate(String, DateComponent)
      */
-    public static String formatDate(String formatString) {
+    public String formatDate(String formatString) {
         return formatDate(formatString,
                 new DateComponent(calendarMath.getCurrentMonthDay(), calendarMath.getCurrentYearMonth(), calendarMath.getCurrentYear(), calendarMath.getCurrentDay()));
     }
 
-    /** Converts a date to kitty-readable form, similar to {@link java.text.SimpleDateFormat}.
+    /** Converts a date to person-readable form, similar to {@link java.text.SimpleDateFormat}.
      * This mostly follows the same format, with a few exceptions.  Full list of pattern parts follows.
      *
      * <ul>
@@ -87,10 +80,10 @@ public class CalendarFormatter {
      *
      * @param formatString The string used to convert the date given.  Similar to {@link java.text.SimpleDateFormat}
      * @param date The date to process.
-     * @return Kitty-readable date string.
+     * @return Person-readable date string.
      */
-    public static String formatDate(String formatString, DateComponent date) {
-        mather.updateToday(date.getGameDay());
+    public String formatDate(String formatString, DateComponent date) {
+        calendarMath.updateToday(date.getGameDay());
 
         Pattern pattern = Pattern.compile("([a-zA-Z]+|[^a-zA-Z]+)");
         Matcher matcher = pattern.matcher(formatString);
@@ -114,15 +107,15 @@ public class CalendarFormatter {
                     break;
                 case "w":
                 case "W": break;
-                case "D": sb.append(String.valueOf(mather.getCurrentDay())); break;
-                case "d": sb.append(String.valueOf(mather.getCurrentMonthDay())); break;
+                case "D": sb.append(String.valueOf(calendarMath.getCurrentDay())); break;
+                case "d": sb.append(String.valueOf(calendarMath.getCurrentMonthDay() + 1)); break;
                 case "E":
                     switch (test.length()) {
-                        case 2: sb.append(calendarComponent.getWeekdays().get(mather.getCurrentWeekDay()).shortName); break;
-                        default: sb.append(calendarComponent.getWeekdays().get(mather.getCurrentWeekDay()).name); break;
+                        case 2: sb.append(calendarComponent.getWeekdays().get(calendarMath.getCurrentWeekDay()).shortName); break;
+                        default: sb.append(calendarComponent.getWeekdays().get(calendarMath.getCurrentWeekDay()).name); break;
                     }
                     break;
-                case "u": sb.append(String.valueOf(mather.getCurrentWeekDay())); break;
+                case "u": sb.append(String.valueOf(calendarMath.getCurrentWeekDay())); break;
                 default: sb.append(test);
             }
         }

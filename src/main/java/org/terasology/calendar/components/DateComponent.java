@@ -23,10 +23,13 @@ public class DateComponent implements Component {
     private int year;
     private int gameDay;
 
+    private DateComponent() {
+    }
+
     public DateComponent(int newDay, int newMonth, int newYear, int totalDay) {
-        day = day;
-        month = month;
-        year = year;
+        day = newDay;
+        month = newMonth;
+        year = newYear;
         gameDay = totalDay;
     }
 

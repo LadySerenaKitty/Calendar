@@ -23,19 +23,23 @@ public class HolidayComponent implements Component {
 
     private int day;
     private int month;
+
     private int endDay;
     private int endMonth;
+
+    private int length;
 
     private String name;
 
     private HolidayComponent() {
     }
 
-    public HolidayComponent(int calendarStartDay, int calendarStartMonth, int calendarEndDay, int calendarEndMonth, String calendarName) {
+    public HolidayComponent(int calendarStartDay, int calendarStartMonth, int calendarEndDay, int calendarEndMonth, int calendarLength, String calendarName) {
         day = calendarStartDay;
         month = calendarStartMonth;
         endDay = calendarEndDay;
         endMonth = calendarEndMonth;
+        length = calendarLength;
 
         name = calendarName;
     }
@@ -54,6 +58,10 @@ public class HolidayComponent implements Component {
 
     public int getEndMonth() {
         return endMonth;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public String getName() {

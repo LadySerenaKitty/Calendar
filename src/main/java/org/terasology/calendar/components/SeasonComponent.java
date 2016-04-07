@@ -26,17 +26,21 @@ public class SeasonComponent implements Component {
     private int endDay;
     private int endMonth;
 
+    private int length;
+
     private String name;
 
     private SeasonComponent() {
     }
 
-    public SeasonComponent(int sDay, int sMonth, int eDay, int eMonth, String seasonName) {
-        startDay = sDay;
-        startMonth = sMonth;
+    public SeasonComponent(int calendarStartDay, int calendarStartMonth, int calendarEndDay, int calendarEndMonth, int calendarLength, String seasonName) {
+        startDay = calendarStartDay;
+        startMonth = calendarStartMonth;
 
-        endDay = eDay;
-        endMonth = eMonth;
+        endDay = calendarEndDay;
+        endMonth = calendarEndMonth;
+
+        length = calendarLength;
 
         name = seasonName;
     }
@@ -55,6 +59,10 @@ public class SeasonComponent implements Component {
 
     public int getEndMonth() {
         return endMonth;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public String getName() {
