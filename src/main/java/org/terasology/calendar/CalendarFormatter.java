@@ -20,6 +20,9 @@ import java.util.regex.Pattern;
 import org.terasology.calendar.components.CalendarComponent;
 import org.terasology.calendar.components.DateComponent;
 
+/**
+ * Formats the date in a fashion similar to {@code java.text.SimpleDateFormat}.
+ */
 public class CalendarFormatter {
 
     private static CalendarComponent calendarComponent = null;
@@ -37,14 +40,31 @@ public class CalendarFormatter {
         }
     }
 
+    /**
+     * Converts the current date to person-readable form based on the Calendar's default format.
+     * @return Person-readable date string.
+     * @see #formatDate(String, DateComponent)
+     */
     public static String formatDate() {
         return formatDate(calendarComponent.getDefaultFormat());
     }
 
+    /**
+     * Converts a specified date to person-readable form based on the Calendar's default format.
+     * @param date The date to process.
+     * @return Person-readable date string.
+     * @see #formatDate(String, DateComponent)
+     */
     public static String formatDate(DateComponent date) {
         return formatDate(calendarComponent.getDefaultFormat(), date);
     }
 
+    /**
+     * Converts the current date to person-readable form based on a specified format.
+     * @param formatString The string to use for formatting.
+     * @return Person-readable date string.
+     * @see #formatDate(String, DateComponent)
+     */
     public static String formatDate(String formatString) {
         return formatDate(formatString,
                 new DateComponent(calendarMath.getCurrentMonthDay(), calendarMath.getCurrentYearMonth(), calendarMath.getCurrentYear(), calendarMath.getCurrentDay()));
