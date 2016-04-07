@@ -18,6 +18,9 @@ package org.terasology.calendar.components;
 import org.terasology.entitySystem.Component;
 import org.terasology.reflection.MappedContainer;
 
+/**
+ * Complete definition of a season.
+ */
 @MappedContainer
 public class SeasonComponent implements Component {
     private int startDay;
@@ -30,10 +33,22 @@ public class SeasonComponent implements Component {
 
     private String name;
 
+    /**
+     * Creates an empty season.
+     */
     private SeasonComponent() {
     }
 
-    public SeasonComponent(int calendarStartDay, int calendarStartMonth, int calendarEndDay, int calendarEndMonth, int calendarLength, String seasonName) {
+    /**
+     * Creates a season with all the specified information.
+     * @param calendarStartDay The starting day of month.
+     * @param calendarStartMonth The starting month of year.
+     * @param calendarEndDay The ending day of month.
+     * @param calendarEndMonth The ending month of year.
+     * @param calendarLength The length (in days) of the season.
+     * @param calendarName The name of the season.
+     */
+    public SeasonComponent(int calendarStartDay, int calendarStartMonth, int calendarEndDay, int calendarEndMonth, int calendarLength, String calendarName) {
         startDay = calendarStartDay;
         startMonth = calendarStartMonth;
 
@@ -42,29 +57,53 @@ public class SeasonComponent implements Component {
 
         length = calendarLength;
 
-        name = seasonName;
+        name = calendarName;
     }
 
+    /**
+     * Get the starting day of month.
+     * @return Day of month.
+     */
     public int getStartDay() {
         return startDay;
     }
 
+    /**
+     * Get the starting month of year.
+     * @return Month of year.
+     */
    public int getStartMonth() {
         return startMonth;
     }
 
+   /**
+    * Get the ending day of month.
+    * @return Day of month.
+    */
     public int getEndDay() {
         return endDay;
     }
 
+    /**
+     * Get the ending month of year.
+     * @return Month of year.
+     */
     public int getEndMonth() {
         return endMonth;
     }
 
+    /**
+     * Get the length (in days) of the season.
+     * @return Length in days.
+     */
     public int getLength() {
         return length;
     }
 
+    /**
+     * Get the name of the season.
+     * @return Name of season.
+     */
     public String getName() {
         return name;
     }

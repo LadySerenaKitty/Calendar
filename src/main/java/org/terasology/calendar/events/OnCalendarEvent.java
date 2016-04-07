@@ -28,7 +28,15 @@ import org.terasology.entitySystem.event.Event;
  * Note the Event type always fires with Start and End events.
  */
 public class OnCalendarEvent implements Event {
+
+    /**
+     * The year in which the event occurs.
+     */
     int year;
+
+    /**
+     * The number of the unit.
+     */
     int unit;
 
     /**
