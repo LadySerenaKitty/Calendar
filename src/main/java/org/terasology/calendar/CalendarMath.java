@@ -82,7 +82,7 @@ public class CalendarMath {
     public void updateToday(int calcDays) {
         currentDay = calcDays;
         // calculate the year
-        currentYear = TeraMath.floorToInt(calcDays / daysYear) + 1;
+        currentYear = TeraMath.floorToInt(calcDays / daysYear);
         currentYearDay = calcDays % daysYear;
         currentWeekDay = calcDays % daysWeek;
 
@@ -127,7 +127,7 @@ public class CalendarMath {
      * @return The day of the month.
      */
     public int getCurrentMonthDay() {
-        return currentMonthDay + 1;
+        return currentMonthDay;
     }
 
     /**
@@ -159,7 +159,7 @@ public class CalendarMath {
      * @return Day of the year.
      */
     public int getCurrentYearDay() {
-        return currentYearDay + 1;
+        return currentYearDay;
     }
 
     /**
@@ -207,7 +207,7 @@ public class CalendarMath {
      * @return true if the day marks the ending of a year.
      */
     public boolean isYearEnd() {
-        return (getCurrentYearDay() == daysYear);
+        return (getCurrentYearDay() == (daysYear - 1));
     }
 
     /**
@@ -215,7 +215,7 @@ public class CalendarMath {
      * @return true if the day marks the ending of a month.
      */
     public boolean isMonthEnd() {
-        return (getCurrentMonthDay() == daysMonth);
+        return (getCurrentMonthDay() == (daysMonth - 1));
     }
 
     /**
