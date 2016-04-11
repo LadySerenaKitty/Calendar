@@ -46,10 +46,10 @@ import org.terasology.calendar.events.OnWeekStart;
 import org.terasology.calendar.events.OnYearEnd;
 import org.terasology.calendar.events.OnYearEvent;
 import org.terasology.calendar.events.OnYearStart;
+import org.terasology.calendar.util.BroadcastHelper;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.Event;
 import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
@@ -212,7 +212,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         prevTick = tick;
 
         if (tick == 1 && day != prevDay) {
-            calendarMath.updateToday();
+            calendarMath.updateToday(day);
             update(true);
             broadcastCalendar();
         }
@@ -226,85 +226,6 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
     }
 
     /**
-     * Checks start dates and end dates against a specified date to see if the specified date is within the dates.
-     * @param cm Current date to query.
-     * @param startDay Starting day to check against.  Must be day in month.
-     * @param startMonth Starting month to check against.  Must be month in year.
-     * @param endDay Ending day to check against.  Must be day in month.
-     * @param endMonth Ending month to check against.  Must be month in year.
-     * @return true if the specified date is within the date range.
-     */
-    public boolean isThingCurrent(CalendarMath cm, int startDay, int startMonth, int endDay, int endMonth) {
-        int currentDay = cm.getCurrentMonthDay();
-        int currentMonth = cm.getCurrentYearMonth();
-
-        if (startMonth <= endMonth) {
-            // within the year
-            if (startMonth <= currentMonth && currentMonth <= endMonth) {
-                if (startMonth < currentMonth && currentMonth < endMonth) {
-                    // in a middle month
-                    return true;
-                } else if (startMonth == currentMonth && startDay <= currentDay) {
-                    // in the starting month
-                    return true;
-                } else if (endMonth == currentMonth && currentDay <= endDay) {
-                    // in the ending month
-                    return true;
-                }
-            }
-            return false;
-        } else if (endMonth < startMonth) {
-            // year crossing
-            if (startMonth <= currentMonth) {
-                if (startMonth == currentMonth && startDay <= currentDay) {
-                    return true;
-                } else if (startMonth < currentMonth) {
-                    return true;
-                }
-            } else if (currentMonth <= endMonth) {
-                if (endMonth == currentMonth && currentDay <= endDay) {
-                    return true;
-                } else if (currentMonth < endMonth) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * The day number of something, checked against the current date.
-     * @param gameDayWhenStarted The game day to calculate with.
-     * @return The day of something, for example, day 1 of a season.
-     */
-    public int dayOf(int gameDayWhenStarted) {
-        return gameDayWhenStarted - calendarMath.getCurrentDay() + 1;
-    }
-
-    /**
-     * The day number of something, checked against the current date.
-     * @param date The date to calculate with.
-     * @return The day of something, for example, day 1 of a season.
-     */
-    public int dayOf(DateComponent date) {
-        return dayOf(date.getGameDay());
-    }
-
-    /**
-     * The day number of something, checked against the current date.
-     * @param startDay  The day when the thing started.
-     * @param startMonth The month when the thing started.
-     * @param startYear The year when the thing started.
-     * @return The day of something, for example: day 1 of summer
-     */
-    public int dayOf(int startDay, int startMonth, int startYear) {
-        int days = startYear * getDaysPerYear();
-        days += startMonth * getDaysPerMonth();
-        days += startDay;
-        return dayOf(days);
-    }
-
-    /**
      * The current day of a holiday.
      * @param holidayComponent The {@link HolidayComponent} to get the day of.
      * @return The day of the specified holiday, for example: day 1 of fiesta week
@@ -314,7 +235,9 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         if (holidayComponent.getStartMonth() > currentDateComponent.getMonth()) {
             decrement = true;
         }
-        return dayOf(holidayComponent.getStartDay(), holidayComponent.getStartMonth() - 1, calendarMath.getCurrentYear() - (decrement?1:0));
+        //return calendarMath.dayOf(holidayComponent.getStartDay() - 1, holidayComponent.getStartMonth() - 1, calendarMath.getCurrentYear() - (decrement ? 1 : 0));
+        return calendarMath.getCalendarLength(holidayComponent.getStartDay(), holidayComponent.getStartMonth(),
+                calendarMath.getCurrentMonthDay() + 1, calendarMath.getCurrentYearMonth() + 1);
     }
 
     /**
@@ -326,7 +249,9 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         if (currentSeasonComponent.getStartMonth() > currentDateComponent.getMonth()) {
             decrement = true;
         }
-        return dayOf(currentSeasonComponent.getStartDay(), currentSeasonComponent.getStartMonth() - 1, calendarMath.getCurrentYear() - (decrement?1:0));
+        return calendarMath.dayOf(currentSeasonComponent.getStartDay() - 1, currentSeasonComponent.getStartMonth() - 1, calendarMath.getCurrentYear() - (decrement ? 1 : 0));
+        //return calendarMath.getCalendarLength(currentSeasonComponent.getStartDay(), currentSeasonComponent.getStartMonth(),
+        //        calendarMath.getCurrentMonthDay() + 1, calendarMath.getCurrentYearMonth() + 1);
     }
 
     /**
@@ -459,27 +384,6 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
     }
 
     /**
-     * Calculates the length of a thing based on its start and end dates.
-     * @param startDay Starting day to check against.  Must be day in month.
-     * @param startMonth Starting month to check against.  Must be month in year.
-     * @param endDay Ending day to check against.  Must be day in month.
-     * @param endMonth Ending month to check against.  Must be month in year.
-     * @return The length (in days) of a thing.
-     */
-    public int getCalendarLength(int startDay, int startMonth, int endDay, int endMonth) {
-        if (startMonth == endMonth) { // within the month
-            return (endDay - startDay) + 1;
-        } else if (startMonth < endMonth) { // within the same year
-            return (calendar.getDaysPerMonth() * (endMonth - startMonth)) + (endDay - startDay) + 1;
-        }
-        else if (endMonth < startMonth) { // spans a year crossing
-            return (calendar.getDaysPerMonth() * (startMonth - endMonth)) + (endDay - startDay) + 1;
-        } else {
-            return 1;
-        }
-    }
-
-    /**
      * Updates the stored values pertaining to the current date.
      * @param force if {@code true}, forces an update
      */
@@ -522,7 +426,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         while (it.hasNext()) {
             hc = it.next();
 
-            if (isThingCurrent(calendarMath, hc.getStartDay(), hc.getStartMonth(), hc.getEndDay(), hc.getEndMonth())) {
+            if (calendarMath.isThingCurrent(hc.getStartDay(), hc.getStartMonth(), hc.getEndDay(), hc.getEndMonth())) {
                 list.add(hc);
             }
         }
@@ -557,7 +461,9 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         while (it.hasNext()) {
             sc = it.next();
 
-            if (isThingCurrent(calendarMath, sc.getStartDay(), sc.getStartMonth(), sc.getEndDay(), sc.getEndMonth())) {
+            logger.info(String.format("getCurrentSeason: %s\tsd: %s\tsm: %s\ted: %s\tem: %s", sc.getName(),
+                    sc.getStartDay(), sc.getStartMonth(), sc.getEndDay(), sc.getEndMonth()));
+            if (calendarMath.isThingCurrent(sc.getStartDay(), sc.getStartMonth(), sc.getEndDay(), sc.getEndMonth())) {
                 return sc;
             }
         }
@@ -583,7 +489,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
      * @return Length in days of the specified holiday.
      */
     private int getCalendarLength(HolidayInitComponent holidayInitComponent) {
-        return getCalendarLength(holidayInitComponent.startDay, holidayInitComponent.startMonth, holidayInitComponent.endDay, holidayInitComponent.endMonth);
+        return calendarMath.getCalendarLength(holidayInitComponent.startDay, holidayInitComponent.startMonth, holidayInitComponent.endDay, holidayInitComponent.endMonth);
     }
 
     /**
@@ -592,7 +498,7 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
      * @return Length in days of the specified season.
      */
     private int getCalendarLength(SeasonInitComponent seasonInitComponent) {
-        return getCalendarLength(seasonInitComponent.startDay, seasonInitComponent.startMonth, seasonInitComponent.endDay, seasonInitComponent.endMonth);
+        return calendarMath.getCalendarLength(seasonInitComponent.startDay, seasonInitComponent.startMonth, seasonInitComponent.endDay, seasonInitComponent.endMonth);
     }
 
     /**
@@ -602,37 +508,34 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         int tYear = calendarMath.getCurrentYear();
         int tMonth = calendarMath.getCurrentYearMonth();
         int tDay = calendarMath.getCurrentMonthDay();
+        BroadcastHelper bh = new BroadcastHelper(entityManager, world);
 
         // broadcast the year
         if (calendarMath.isYearStart()) {
-            broadcastEvent(new OnYearEvent(tYear, tYear), currentDateComponent, currentWeekdayComponent);
-            broadcastEvent(new OnYearStart(tYear, tYear), currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnYearEvent(tYear, tYear), currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnYearStart(tYear, tYear), currentDateComponent, currentWeekdayComponent);
         }
 
         // broadcast the month
         if (calendarMath.isMonthStart()) {
-            broadcastEvent(new OnMonthEvent(tYear, tMonth), currentMonthComponent, currentDateComponent, currentWeekdayComponent);
-            broadcastEvent(new OnMonthStart(tYear, tMonth), currentMonthComponent, currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnMonthEvent(tYear, tMonth), currentMonthComponent, currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnMonthStart(tYear, tMonth), currentMonthComponent, currentDateComponent, currentWeekdayComponent);
         }
 
         // broadcast the week (currently, only WeekType.GAME is implemented fully
         if (calendarMath.isWeekStart()) {
-            broadcastEvent(new OnWeekEvent(tYear, calendarMath.getCurrentGameWeek()), currentDateComponent, currentWeekdayComponent);
-            broadcastEvent(new OnWeekStart(tYear, calendarMath.getCurrentGameWeek()), currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnWeekEvent(tYear, calendarMath.getCurrentGameWeek()), currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnWeekStart(tYear, calendarMath.getCurrentGameWeek()), currentDateComponent, currentWeekdayComponent);
         }
 
         // broadcast the day
-        broadcastEvent(new OnCalendarEvent(tYear, calendarMath.getCurrentYearDay()), currentDateComponent, currentWeekdayComponent);
+        bh.broadcastEvent(new OnCalendarEvent(tYear, calendarMath.getCurrentYearDay()), currentDateComponent, currentWeekdayComponent);
 
         // broadcast the season
-        if (!seasons.isEmpty()) {
-            if (currentSeasonComponent != null) {
-                if (tDay == currentSeasonComponent.getStartDay() && tMonth == currentSeasonComponent.getStartMonth()) {
-                    broadcastEvent(
-                            new OnSeasonEvent(tYear, seasons.indexOf(currentSeasonComponent)), currentSeasonComponent, currentDateComponent, currentWeekdayComponent);
-                    broadcastEvent(
-                            new OnSeasonStart(tYear, seasons.indexOf(currentSeasonComponent)), currentSeasonComponent, currentDateComponent, currentWeekdayComponent);
-                }
+        if (currentSeasonComponent != null) {
+            if (tDay == currentSeasonComponent.getStartDay() && tMonth == currentSeasonComponent.getStartMonth()) {
+                bh.broadcastEvent(new OnSeasonEvent(tYear, seasons.indexOf(currentSeasonComponent)), currentSeasonComponent, currentDateComponent, currentWeekdayComponent);
+                bh.broadcastEvent(new OnSeasonStart(tYear, seasons.indexOf(currentSeasonComponent)), currentSeasonComponent, currentDateComponent, currentWeekdayComponent);
             }
         }
 
@@ -640,8 +543,8 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         if (!currentHolidayComponents.isEmpty()) {
             currentHolidayComponents.iterator().forEachRemaining((HolidayComponent hc) -> {
                 if (tDay == hc.getStartDay() && tMonth == hc.getStartMonth()) {
-                    broadcastEvent(new OnHolidayEvent(tYear, holidays.indexOf(hc)), hc, currentDateComponent, currentWeekdayComponent);
-                    broadcastEvent(new OnHolidayStart(tYear, holidays.indexOf(hc)), hc, currentDateComponent, currentWeekdayComponent);
+                    bh.broadcastEvent(new OnHolidayEvent(tYear, holidays.indexOf(hc)), hc, currentDateComponent, currentWeekdayComponent);
+                    bh.broadcastEvent(new OnHolidayStart(tYear, holidays.indexOf(hc)), hc, currentDateComponent, currentWeekdayComponent);
                 }
             });
         }
@@ -654,66 +557,49 @@ public class CalendarSystem extends BaseComponentSystem implements UpdateSubscri
         int tYear = calendarMath.getCurrentYear();
         int tMonth = calendarMath.getCurrentYearMonth();
         int tDay = calendarMath.getCurrentMonthDay();
+        BroadcastHelper bh = new BroadcastHelper(entityManager, world);
 
         // broadcast the year
         if (calendarMath.isYearEnd()) {
-            broadcastEvent(new OnYearEvent(tYear, tYear), currentDateComponent, currentWeekdayComponent);
-            broadcastEvent(new OnYearEnd(tYear, tYear), currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnYearEvent(tYear, tYear), currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnYearEnd(tYear, tYear), currentDateComponent, currentWeekdayComponent);
         }
 
         // broadcast the month
         if (calendarMath.isMonthEnd()) {
-            MonthComponent mic = months.get(tMonth);
-            MonthComponent mc = new MonthComponent(tMonth, mic.getShortName(), mic.getMediumName(), mic.getLongName());
-            broadcastEvent(new OnMonthEvent(tYear, tMonth), mc, currentDateComponent, currentWeekdayComponent);
-            broadcastEvent(new OnMonthEnd(tYear, tYear), mc, currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnMonthEvent(tYear, tMonth), currentMonthComponent, currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnMonthEnd(tYear, tYear), currentMonthComponent, currentDateComponent, currentWeekdayComponent);
         }
 
         // broadcast the week
         if (calendarMath.isWeekEnd()) {
-            broadcastEvent(new OnWeekEvent(tYear, calendarMath.getCurrentGameWeek()), currentDateComponent, currentWeekdayComponent);
-            broadcastEvent(new OnWeekEnd(tYear, calendarMath.getCurrentGameWeek()), currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnWeekEvent(tYear, calendarMath.getCurrentGameWeek()), currentDateComponent, currentWeekdayComponent);
+            bh.broadcastEvent(new OnWeekEnd(tYear, calendarMath.getCurrentGameWeek()), currentDateComponent, currentWeekdayComponent);
         }
 
         // broadcast the season
-        if (!seasons.isEmpty()) {
-            if (currentSeasonComponent != null) {
-                if (tDay == currentSeasonComponent.getEndDay() && tMonth == currentSeasonComponent.getEndMonth()) {
-                    broadcastEvent(
-                            new OnSeasonEvent(tYear, seasons.indexOf(currentSeasonComponent)), currentSeasonComponent, currentDateComponent, currentWeekdayComponent);
-                    broadcastEvent(
-                            new OnSeasonEnd(tYear, seasons.indexOf(currentSeasonComponent)), currentSeasonComponent, currentDateComponent, currentWeekdayComponent);
-                }
-            };
+        if (currentSeasonComponent != null) {
+            if (tDay == currentSeasonComponent.getEndDay() && tMonth == currentSeasonComponent.getEndMonth()) {
+                bh.broadcastEvent(new OnSeasonEvent(tYear, seasons.indexOf(currentSeasonComponent)), currentSeasonComponent, currentDateComponent, currentWeekdayComponent);
+                bh.broadcastEvent(new OnSeasonEnd(tYear, seasons.indexOf(currentSeasonComponent)), currentSeasonComponent, currentDateComponent, currentWeekdayComponent);
+            }
         }
 
         // broadcast any holidays
         if (!currentHolidayComponents.isEmpty()) {
-            currentHolidayComponents.iterator().forEachRemaining((HolidayComponent hc) ->{
+            currentHolidayComponents.iterator().forEachRemaining((HolidayComponent hc) -> {
                 if (tDay == hc.getEndDay() && tMonth == hc.getEndMonth()) {
-                    broadcastEvent(new OnHolidayEvent(tYear, holidays.indexOf(hc)), hc, currentDateComponent, currentWeekdayComponent);
-                    broadcastEvent(new OnHolidayEnd(tYear, holidays.indexOf(hc)), hc, currentDateComponent, currentWeekdayComponent);
+                    bh.broadcastEvent(new OnHolidayEvent(tYear, holidays.indexOf(hc)), hc, currentDateComponent, currentWeekdayComponent);
+                    bh.broadcastEvent(new OnHolidayEnd(tYear, holidays.indexOf(hc)), hc, currentDateComponent, currentWeekdayComponent);
                 }
             });
         }
     }
 
     /**
-     * Dispatches an event for the chat system to receive.
-     * @param evt The event to broadcast.
-     * @param comp Components to broadcast with the event.
-     */
-    private void broadcastEvent(Event evt, Component... comp) {
-        EntityRef ent = entityManager.create();
-        for (Component c : comp) {
-            ent.addComponent(c);
-        }
-        world.getWorldEntity().send(evt);
-    }
-
-    /**
      * Broadcasts a message with the new date.
      */
+    @SuppressWarnings("unchecked")
     private void broadcastCalendar() {
         String message = notifyClientString();
         for (EntityRef client : entityManager.getEntitiesWith(ClientComponent.class)) {

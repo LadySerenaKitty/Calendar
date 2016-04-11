@@ -25,6 +25,8 @@ import org.terasology.calendar.components.DateComponent;
  */
 public class CalendarFormatter {
 
+    public static final String PATTERN = "a-zA-Z";
+
     private CalendarComponent calendarComponent;
     private CalendarMath calendarMath;
 
@@ -59,6 +61,7 @@ public class CalendarFormatter {
      * @see #formatDate(String, DateComponent)
      */
     public String formatDate(String formatString) {
+        calendarMath.updateToday();
         return formatDate(formatString,
                 new DateComponent(calendarMath.getCurrentMonthDay(), calendarMath.getCurrentYearMonth(), calendarMath.getCurrentYear(), calendarMath.getCurrentDay()));
     }
@@ -85,7 +88,7 @@ public class CalendarFormatter {
     public String formatDate(String formatString, DateComponent date) {
         calendarMath.updateToday(date.getGameDay());
 
-        Pattern pattern = Pattern.compile("([a-zA-Z]+|[^a-zA-Z]+)");
+        Pattern pattern = Pattern.compile("([".concat(PATTERN).concat("]+|[^").concat(PATTERN).concat("]+)"));
         Matcher matcher = pattern.matcher(formatString);
 
         int a;
@@ -95,28 +98,48 @@ public class CalendarFormatter {
         while (matcher.find()) {
             test = matcher.group();
             switch (test.substring(0, 1)) {
-                case "y": sb.append(String.valueOf(date.getYear() + 1)); break;
+                case "y":
+                    sb.append(String.valueOf(date.getYear() + 1));
+                    break;
                 case "L":
                 case "M":
                     switch (test.length()) {
-                        case 4: sb.append(calendarComponent.getMonths().get(date.getMonth()).longName); break;
-                        case 3: sb.append(calendarComponent.getMonths().get(date.getMonth()).mediumName); break;
-                        case 2: sb.append(calendarComponent.getMonths().get(date.getMonth()).shortName); break;
-                        default: sb.append(String.valueOf(date.getMonth())); break;
+                        case 4:
+                            sb.append(calendarComponent.getMonths().get(calendarMath.getCurrentYearMonth()).longName);
+                            break;
+                        case 3:
+                            sb.append(calendarComponent.getMonths().get(calendarMath.getCurrentYearMonth()).mediumName);
+                            break;
+                        case 2:
+                            sb.append(calendarComponent.getMonths().get(calendarMath.getCurrentYearMonth()).shortName);
+                            break;
+                        default:
+                            sb.append(String.valueOf(calendarMath.getCurrentYearMonth() + 1));
                     }
                     break;
                 case "w":
-                case "W": break;
-                case "D": sb.append(String.valueOf(calendarMath.getCurrentDay())); break;
-                case "d": sb.append(String.valueOf(calendarMath.getCurrentMonthDay() + 1)); break;
+                case "W":
+                    break;
+                case "D":
+                    sb.append(String.valueOf(calendarMath.getCurrentYearDay() + 1));
+                    break;
+                case "d":
+                    sb.append(String.valueOf(calendarMath.getCurrentMonthDay() + 1));
+                    break;
                 case "E":
                     switch (test.length()) {
-                        case 2: sb.append(calendarComponent.getWeekdays().get(calendarMath.getCurrentWeekDay()).shortName); break;
-                        default: sb.append(calendarComponent.getWeekdays().get(calendarMath.getCurrentWeekDay()).name); break;
+                        case 2:
+                            sb.append(calendarComponent.getWeekdays().get(calendarMath.getCurrentWeekDay()).shortName);
+                            break;
+                        default:
+                            sb.append(calendarComponent.getWeekdays().get(calendarMath.getCurrentWeekDay()).name);
                     }
                     break;
-                case "u": sb.append(String.valueOf(calendarMath.getCurrentWeekDay())); break;
-                default: sb.append(test);
+                case "u":
+                    sb.append(String.valueOf(calendarMath.getCurrentWeekDay()));
+                    break;
+                default:
+                    sb.append(test);
             }
         }
         return sb.toString();

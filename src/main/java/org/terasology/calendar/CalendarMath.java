@@ -17,6 +17,7 @@ package org.terasology.calendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.calendar.components.DateComponent;
 import org.terasology.math.TeraMath;
 import org.terasology.world.time.WorldTime;
 
@@ -81,6 +82,7 @@ public class CalendarMath {
      */
     public void updateToday(int calcDays) {
         currentDay = calcDays;
+        logger.info(String.format("updateToday: %s", calcDays));
         // calculate the year
         currentYear = TeraMath.floorToInt(calcDays / daysYear);
         currentYearDay = calcDays % daysYear;
@@ -224,5 +226,102 @@ public class CalendarMath {
      */
     public boolean isWeekEnd() {
         return (getCurrentWeekDay() == (daysWeek - 1));
+    }
+
+    /**
+     * Calculates the length of a thing based on its start and end dates.
+     * @param startDay Starting day to check against.  Must be day in month.
+     * @param startMonth Starting month to check against.  Must be month in year.
+     * @param endDay Ending day to check against.  Must be day in month.
+     * @param endMonth Ending month to check against.  Must be month in year.
+     * @return The length (in days) of a thing.
+     */
+    public int getCalendarLength(int startDay, int startMonth, int endDay, int endMonth) {
+        if (startMonth == endMonth) { // within the month
+            return (endDay - startDay) + 1;
+        } else if (startMonth < endMonth) { // within the same year
+            return (daysMonth * (endMonth - startMonth)) + (endDay - startDay) + 1;
+        } else if (endMonth < startMonth) { // spans a year crossing
+            return (daysMonth * (startMonth - endMonth)) + (endDay - startDay) + 1;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * The day number of something, checked against the current date.
+     * @param gameDayWhenStarted The game day to calculate with.
+     * @return The day of something, for example, day 1 of a season.
+     */
+    public int dayOf(int gameDayWhenStarted) {
+        return gameDayWhenStarted - currentDay + 1;
+    }
+
+    /**
+     * The day number of something, checked against the current date.
+     * @param date The date to calculate with.
+     * @return The day of something, for example, day 1 of a season.
+     */
+    public int dayOf(DateComponent date) {
+        return dayOf(date.getGameDay());
+    }
+
+    /**
+     * The day number of something, checked against the current date.
+     * @param startDay  The day when the thing started.
+     * @param startMonth The month when the thing started.
+     * @param startYear The year when the thing started.
+     * @return The day of something, for example: day 1 of summer
+     */
+    public int dayOf(int startDay, int startMonth, int startYear) {
+        int days = getCalendarLength(startDay, startMonth, currentMonthDay, currentYearMonth);
+        if ( startYear < currentYear) {
+            days += (startYear - currentYear) * daysYear;
+        }
+        return days;
+    }
+
+    /**
+     * Checks start dates and end dates against a specified date to see if the specified date is within the dates.
+     * @param startDay Starting day to check against.  Must be day in month.
+     * @param startMonth Starting month to check against.  Must be month in year.
+     * @param endDay Ending day to check against.  Must be day in month.
+     * @param endMonth Ending month to check against.  Must be month in year.
+     * @return true if the specified date is within the date range.
+     */
+    public boolean isThingCurrent(int startDay, int startMonth, int endDay, int endMonth) {
+
+        if (startMonth <= endMonth) {
+            // within the year
+            if (startMonth <= currentYearMonth && currentYearMonth <= endMonth) {
+                if (startMonth < currentYearMonth && currentYearMonth < endMonth) {
+                    // in a middle month
+                    return true;
+                } else if (startMonth == currentYearMonth && startDay <= currentMonthDay) {
+                    // in the starting month
+                    return true;
+                } else if (startMonth == currentYearMonth && currentMonthDay <= endDay) {
+                    // in the ending month
+                    return true;
+                }
+            }
+            return false;
+        } else if (endMonth < startMonth) {
+            // year crossing
+            if (startMonth <= currentYearMonth) {
+                if (startMonth == currentYearMonth && startDay <= currentMonthDay) {
+                    return true;
+                } else if (startMonth < currentYearMonth) {
+                    return true;
+                }
+            } else if (currentYearMonth <= endMonth) {
+                if (endMonth == currentYearMonth && currentMonthDay <= endDay) {
+                    return true;
+                } else if (currentYearMonth < endMonth) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
